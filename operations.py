@@ -15,13 +15,11 @@ Let's imagine each of these elements as a certain characteristic of a sample:
 
 """
 
-
+from template import Template
 
 def dist(v1,v2):
     """ Determine distance """
     return sum((e1 == e2) for e1,e2 in zip(v1,v2))
-
-
 
 class Operation(object):
 
@@ -51,43 +49,54 @@ class Operation(object):
 class OligoSynthesis(Operation):
 
     name = 'Oligo Synthesis'
-    input_template = (('*','*','*','*'),)
-    output_template = (('Sequence',None,'Linear',None),)
+    input_template = Template(no_input = True)
+    output_template = Template(type = 'DNA', shape = 'linear', length = 'short')
 
 class GBlockSynthesis(Operation):
 
-    name = 'Oligo Synthesis'
-    input_template = (('*','*','*','*'),)
-    output_template = (('Sequence',None,'Linear',None),)
+    name = 'GBlock Synthesis'
+    input_template = Template(no_input = True)
+    output_template = Template(type = 'DNA', shape = 'linear', length = 'long')
 
 class Ligate(Operation):
 
     name = 'Ligate'
-    input_template = (('Sequence',None,'Linear',None),('Sequence',None,'Linear',None))
-    output_template = (('Sequence',None,'Circular',None),)
+    input_template = Template(type = 'DNA', shape = 'linear')
+    output_template = Template(type = 'DNA', shape = 'circular')
+
+class Gibson(Operation):
+
+    name = 'Gibson Assembly'
+    input_template = Template(type = 'DNA', shape = 'linear')
+    output_template = Template(type = 'DNA', shape = 'circular')
 
 class Transform(Operation):
 
     name = 'Transform'
-    input_template = (('Sequence',None,'Circular',None),)
-    output_template = (('Cell',None,'Circular','low'),)
+    input_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'E.Coli', concentration = 'low')
 
 class Outgrowth(Operation):
 
     name = 'Outgrowth'
-    input_template = (('Cell',None,None,'low'),)
-    output_template = (('Cell',None,None,'high'),)
+    input_template = Template(type = 'E.Coli', concentration = 'low')
+    output_template = Template(type = 'E.Coli', concentration = 'high')
 
+class Miniprep(Operation):
 
-def gibson(v1,v2):
-    pass
+    name = 'Miniprep'
+    input_template = Template(type = 'E.Coli', concentration = 'high')
+    output_template = Template(type = 'DNA', shape = 'circular')
 
-def grow(v1):
-    pass  
+class Quikchange(Operation):
 
+    name = 'Quikchange'
+    input_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'DNA', shape = 'circular')
 
 def get_default_operations():
-    return [OligoSynthesis,GBlockSynthesis,Ligate,Transform,Outgrowth]
+    return [OligoSynthesis,GBlockSynthesis,Ligate,Gibson,Transform,Outgrowth,Miniprep,Quikchange]
+
 
 start_samples = [
     ('CUT----------CUT','linear','soluble','low'),

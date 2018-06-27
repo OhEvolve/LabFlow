@@ -1,100 +1,98 @@
 
 
-# standard libraries
-import sys
-
 # nonstandard libraries
 import matplotlib.pyplot as plt
 from graphviz import Digraph
+import networkx as nx
 
-# homegrown libraries
-import operations as op
+def node_converter(t):
+    """ Converts node tuple to string """
+    return tuple_to_string(t)
 
-max_iterations = 10
+def edge_converter(ts):
+    """ Converts edge tuple of tuples to tuple of strings """
+    return tuple((tuple_to_string(t) for t in ts))
 
-def add_node 
+def tuple_to_string(t):
+    return ', '.join((e if e != None else 'Any' for e in t))
 
-def node_match(n1,n2):
-    """ Checks to see if two nodes match """
-    for e1,e2 in zip(n1,n2):
+class Network(object):
 
-        if e1 == None or e2 == None:
-            continue
+    def __init__(self):
 
-        if e1 != e2:
+        self.Graph = nx.MultiDiGraph()
+        self.Flowchart = Digraph('protocol_options', filename='protocol_options.gv')
+
+        self.Flowchart.attr(rankdir='LR', size='8,5')
+        self.Flowchart.attr('node', shape='circle')
+
+        self.all_nodes  = []
+        self.all_edges  = []
+
+        self.silent = True
+
+    def _add_graph_edge(self,new_edge,**kwargs):
+        self.Graph.add_edge(*new_edge)
+
+    def _add_flowchart_edge(self,new_edge,**kwargs):
+        self.Flowchart.edge(str(new_edge[0]),str(new_edge[1]),**kwargs)
+
+    def add_node(self,new_node):
+
+        if new_node in self.all_nodes:
             return False
 
-    return True
+        self.all_nodes.append(new_node)
+        #self.Graph.add_node(str(new_node))
+        #self.Flowchart.node(str(new_node))
 
-def build_edge(operation,nodes):
-    """ Decides whether to add a new node using operation """
+        return True
 
-    all_edges = []
+    def add_nodes(self,new_nodes):
 
-    for _input in operation.input_template:
+        count = 0
+       
+        for new_node in new_nodes:
+            if self.add_node(new_node):
+                count += 1
 
-        for node in nodes:
+        if not self.silent: print 'Added {} nodes!'.format(count)
 
-            if node_match(node,_input):
-                for _output in operation.output_template:
-                    all_edges.append((node,_output))
-                break 
+        return bool(count)
 
-    if len(all_edges) == len(operation.input_template):
-        return all_edges
-    else:
-        return False
+    def add_edge(self,new_edge,label=None):
+    
+        if new_edge in self.all_edges:
+            return False
 
-def main():
+        self.all_edges.append((new_edge,label))
+        self.add_nodes(new_edge)
+        self._add_graph_edge(new_edge)
+        self._add_flowchart_edge(new_edge,label=label)
 
-    current_nodes = [('*','*','*','*')]
-    current_edges = []
+        return True
 
-    f = Digraph('protocol_options', filename='fsm.gv')
+    def add_edges(self,new_edges,label=None):
 
-    f.attr(rankdir='LR', size='8,5')
+        count = 0
+       
+        for new_edge in new_edges:
+            if self.add_edge(new_edge,label=label):
+                count += 1
 
-    f.attr('node', shape='circle')
+        if not self.silent: print 'Added {} edges!'.format(count)
 
-    for node in current_nodes:
-        f.node(str(node))
+        return bool(count)
 
-    operations = op.get_default_operations()
+    def display_flowchart(self):
+        self.Flowchart.view()
 
-    for iteration in xrange(max_iterations):
-
-        print 'Current nodes:',current_nodes
-        print 'Current edges:',current_edges
-
-        total_additions = 0
-
-        for operation in operations:
-
-            new_edges = build_edge(operation,current_nodes)
-
-            print 'New edge:',new_edges
-
-            if not new_edges:
-                continue
-
-            for new_edge in new_edges:
-                if not new_edge in current_edges:
-                    f.edge(*new_edge,label=operation.name)
-                    current_edges.append(new_edge)
-                    current_nodes.append(new_edge[1])
-                    #f.edge('LR_0', 'LR_2', label='SS(B)')
-                    total_additions += 1
-
-        if total_additions == 0:
-            break
-
-    f.view()
-
-    plt.show(block=False)
-    raw_input('Press enter to close...')
-    plt.close()
-
-if __name__ == "__main__":
-    main()
+    def display_graph(self):
+        print self.Graph.nodes()
+        print self.Graph.edges()
+        nx.draw(self.Graph)
+        plt.show(block=False)
+        raw_input('Press enter to close...')
+        plt.close()
 
 
