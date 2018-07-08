@@ -12,14 +12,12 @@ def main():
     network = Network()
     network.add_node(Template(no_input = True))
 
-    print 'Network:',network.all_nodes
 
     for iteration in xrange(max_iterations):
 
-        print 'Current nodes:',network.all_nodes
-        print 'Current edges:',network.all_edges
-
-        print 'Iteration {}'.format(iteration)
+        #print 'Current nodes:',network.all_nodes
+        #print 'Current edges:',network.all_edges
+        #print 'Iteration {}'.format(iteration)
 
         additions = 0 # determines if nothing is growing
 
@@ -37,7 +35,7 @@ def main():
             break
 
     network.display_flowchart()
-    network.display_graph()
+    #network.display_graph()
 
 def build_edge(operation,existing_nodes,existing_edges):
 
@@ -75,7 +73,8 @@ def build_edge(operation,existing_nodes,existing_edges):
                                 for potential_edge in potential_edges)):
                 continue
 
-            return potential_edges
+            return [potential_edge for potential_edge in potential_edges 
+                    if not (potential_edge,operation.name) in existing_edges]
             
 
 

@@ -61,7 +61,7 @@ class Network(object):
         return bool(count)
 
     def add_edge(self,new_edge,label=None):
-    
+
         if new_edge in self.all_edges:
             return False
 
@@ -88,8 +88,6 @@ class Network(object):
         self.Flowchart.view()
 
     def display_graph(self):
-        print self.Graph.nodes()
-        print self.Graph.edges()
         nx.draw(self.Graph)
         plt.show(block=False)
         raw_input('Press enter to close...')

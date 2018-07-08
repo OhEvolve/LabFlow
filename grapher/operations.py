@@ -62,13 +62,13 @@ class Ligate(Operation):
 
     name = 'Ligate'
     input_template = Template(type = 'DNA', shape = 'linear')
-    output_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'DNA', shape = 'circular', concentration = 'low')
 
 class Gibson(Operation):
 
     name = 'Gibson Assembly'
     input_template = Template(type = 'DNA', shape = 'linear')
-    output_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'DNA', shape = 'circular', concentration = 'low')
 
 class Transform(Operation):
 
@@ -76,26 +76,70 @@ class Transform(Operation):
     input_template = Template(type = 'DNA', shape = 'circular')
     output_template = Template(type = 'E.Coli', concentration = 'low')
 
-class Outgrowth(Operation):
+class BacterialOutgrowth(Operation):
 
-    name = 'Outgrowth'
+    name = 'Bacterial Outgrowth'
     input_template = Template(type = 'E.Coli', concentration = 'low')
     output_template = Template(type = 'E.Coli', concentration = 'high')
+
+class YeastOutgrowth(Operation):
+
+    name = 'Yeast Outgrowth'
+    input_template = Template(type = 'Yeast', concentration = 'low')
+    output_template = Template(type = 'Yeast', concentration = 'high')
 
 class Miniprep(Operation):
 
     name = 'Miniprep'
     input_template = Template(type = 'E.Coli', concentration = 'high')
-    output_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'DNA', shape = 'circular', concentration = 'high')
 
 class Quikchange(Operation):
 
     name = 'Quikchange'
     input_template = Template(type = 'DNA', shape = 'circular')
-    output_template = Template(type = 'DNA', shape = 'circular')
+    output_template = Template(type = 'DNA', shape = 'circular', concentration = 'low')
+
+class SangerSequence(Operation):
+
+    name = 'Sanger Sequencing'
+    input_template = (Template(type = 'DNA', shape = 'circular'),Template(type = 'DNA', shape = 'linear', length = 'short'))
+    output_template = Template(type = 'Data')
+
+class Electroporation(Operation):
+
+    name = 'Electroporation'
+    input_template = Template(type = 'DNA', shape = 'circular', concentration = 'high')
+    output_template = Template(type = 'Yeast', concentration = 'low')
+
+class AffinityMaturation(Operation):
+
+    name = 'Affinity Maturation'
+    input_template = Template(type = 'Yeast', concentration = 'high')
+    output_template = Template(type = 'Yeast', concentration = 'low')
+
+class Zymoprep(Operation):
+
+    name = 'Zymoprep'
+    input_template = Template(type = 'Yeast', concentration = 'high')
+    output_template = Template(type = 'DNA', shape = 'circular', concentration = 'low')
 
 def get_default_operations():
-    return [OligoSynthesis,GBlockSynthesis,Ligate,Gibson,Transform,Outgrowth,Miniprep,Quikchange]
+    return [
+            OligoSynthesis,
+            GBlockSynthesis,
+            Ligate,
+            Gibson,
+            Transform,
+            BacterialOutgrowth,
+            YeastOutgrowth,
+            Miniprep,
+            Quikchange,
+            SangerSequence,
+            Electroporation,
+            Zymoprep,
+            AffinityMaturation,
+           ]
 
 
 start_samples = [

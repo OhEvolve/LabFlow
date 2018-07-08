@@ -1,7 +1,7 @@
 
 class Template(object):
 
-    traits = ['type','shape','sequence','concentration','length']
+    traits = ['type','shape','sequence','length']
 
     def __init__(self,*args,**kwargs):
 
@@ -43,6 +43,19 @@ class Template(object):
     def __repr__(self):
         """ Representation of template """
 
+        #"""
+
+        if self.no_input == True: return '*'
+
+        label = ['{} - {}'.format(trait,getattr(self,trait)) 
+                for trait in self.traits if getattr(self,trait) != None]
+
+        label = '\n'.join(label)
+
+        return label
+
+        """
+
         if self.no_input == True: return '*'
 
         _type,_shape,_seq,_conc,_len = '','','','',''
@@ -52,8 +65,7 @@ class Template(object):
         if self.concentration: _conc  = ' of {} concentration'.format(self.concentration)
         if self.length:        _len   = ', {}'.format(self.length)
         return _shape + _type + _seq + _conc + _len
-
-            
+        #"""  
         
 
 
