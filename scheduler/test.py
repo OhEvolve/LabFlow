@@ -38,7 +38,7 @@ def _is_schedule_complete(schedule):
 
 
 """
-TESTING Script
+SCHEDULE Class
 """
 
 task1 = Task(name = 'task_1',timeblocks = [Active(1),Inactive(2),Active(1)])
@@ -65,7 +65,6 @@ while not _is_schedule_complete(schedule):
         schedule.load_state(new_state)
 
         #print 'Local history:',schedule.history
-
     
         queue.put(new_state,schedule.get_cost())
         
@@ -74,15 +73,7 @@ while not _is_schedule_complete(schedule):
     schedule.load_state(current_state)
     finished_nodes[current_state['history']] = current_cost 
 
-    '''
-    print 'History:',current_state['history']
-    for k,v in current_state.items():
-        print ' ->',k,v
-    '''
-
-for k,v in schedule.get_state().items():
-    print '>',k,':',v
-
+print schedule
 
     
 

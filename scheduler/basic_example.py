@@ -243,7 +243,7 @@ if __name__ == "__main__":
     task2 = Task(name = 'task_2',timeblocks = [Active(1),Inactive(2),Active(2)])
     task3 = Task(name = 'task_3',timeblocks = [Active(1),Inactive(2),Active(1)])
 
-    schedule = Schedule()
+    schedule = Schedule(workers = 1)
 
     schedule.add_task(task1)
     schedule.add_task(task2)
@@ -254,6 +254,8 @@ if __name__ == "__main__":
         states = schedule.get_next_states()
         schedule.load_state(states[-1])
         print schedule.history
+
+    print schedule
 
 
 
