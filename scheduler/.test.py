@@ -1,10 +1,15 @@
 
-def func(a):
-    for i,b in enumerate(a):
-        b[0] += 1
+class Function:
 
-a = [[1],[2],[3]]
+    def __init__(self):
+        self.mystr = 'asdfasdf'
 
-print a
-func(a)
-print a
+    @property
+    def length(self):
+        return len(self.mystr)
+
+f = Function()
+print f.length
+f.mystr = 'ADFSDF'
+print f.length
+

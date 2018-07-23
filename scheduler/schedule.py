@@ -39,6 +39,7 @@ class Schedule(object):
         self.timepoints = dict([(name,0)    for name in worker_names])
         self.task_states = []
         self.task_requirements = []
+        self.task_start_time = []
         self.task_map = {}
         self.history = ''
 
@@ -47,6 +48,22 @@ class Schedule(object):
         
         # 
         #self.create_new_schedule()
+
+    @property
+    def tag(self):
+
+        return '{} {} {}'.format(
+                self.timepoints.values(),
+                self.task_start_time,
+                self.task_states
+                )
+        '''
+        return '{} {} {}'.format(
+                self.timepoints.values(),
+                self.nullblocks.values(),
+                self.task_states
+                )
+        '''
 
     def __repr__(self):
         return '\n'.join(('{} - {}'.format(name,','.join((str(tb) for tb in self.timelines[name]))) for name in self.worker_names))
@@ -62,6 +79,7 @@ class Schedule(object):
         self.task_states.append(0)  
         self.max_task_states = [len(task.timesections) for task in self.tasks]
         self.task_requirements.append(0)
+        self.task_start_time.append(0)
         self.task_map[new_task.name] = len(self.tasks) - 1
 
     def add_tasks(self,*new_tasks):
@@ -95,6 +113,7 @@ class Schedule(object):
                 'timepoints':   self.timepoints,
                 'task_states': self.task_states,
                 'task_requirements': self.task_requirements,
+                'task_start_time': self.task_start_time,
                 'timelines':     self.timelines,
                 'history':         self.history,
                 }
@@ -105,6 +124,7 @@ class Schedule(object):
         self.timepoints  =  state['timepoints']
         self.task_states = state['task_states']
         self.task_requirements = state['task_requirements']
+        self.task_start_time = state['task_start_time']
         self.timelines   =   state['timelines']
         self.history     =     state['history']
 
@@ -115,6 +135,8 @@ class Schedule(object):
         min_timepoint = min(timepoints)
 
         self.available_worker_name = names[timepoints.index(min_timepoint)]
+
+        return (self.available_worker_name,min_timepoint)
         
     def _merge_worker_timeblocks(self,task_index,*timeblocks):
         """ """
@@ -126,7 +148,9 @@ class Schedule(object):
         task_timeline = [tb for tb in timeblocks for _ in xrange(tb.duration)]
         duration = len(task_timeline)
 
-        if len(timeline) < timepoint + duration:
+        completion_time = timepoint + duration # when finished, used in dependencies 
+
+        if len(timeline) < completion_time:
             timeline += [None for _ in xrange(timepoint + duration - len(timeline))]
 
         # create merged timeline object (if possible)
@@ -158,9 +182,11 @@ class Schedule(object):
             # if task is completed, update requirements
             if state['task_states'][task_index] == self.max_task_states[task_index] \
                     and task_index in self._dependency_map:
+                state['task_start_time'][task_index] = -1 
                 # decrease task requirements if task is complete
                 for sink_id in self._dependency_map[task_index]: 
                     state['task_requirements'][sink_id] += -1
+                    state['task_start_time'][sink_id] = completion_time 
 
         return state
 
@@ -169,13 +195,14 @@ class Schedule(object):
         starting_state = self.get_state()             # create nullblock addition for next state
         next_states = []                              # initialize storage variable
 
-        self._set_available_worker_name() # get worker with lowest timepoint
+        _,current_time = self._set_available_worker_name() # get worker with lowest timepoint
 
         new_state = self._merge_worker_timeblocks('null',*self._nullblock.timeblocks)
         next_states.append(new_state)
 
         for i,task in enumerate(self.tasks):
             
+            if self.task_start_time[i] > current_time: continue # if task requirements not done
             if self.task_states[i] == self.max_task_states[i]: continue # if a task is complete
             if self.task_requirements[i] > 0: continue # if there are remaining requirements 
 
@@ -191,7 +218,7 @@ class Schedule(object):
     def plot(self):
 
         height = 0.5
-        colors = ['blue','green','yellow','red','orange','purple','pink']
+        colors = ['blue','green','yellow','red','orange','purple','pink','teal','brown']
 
         color_map = dict([(task.name,c) for task,c in zip(self.tasks,colors)])
         ypos_map = dict([(task.name,i+1) for i,task in enumerate(self.tasks)])
@@ -206,6 +233,8 @@ class Schedule(object):
 
             if self.worker_count == 1: ax = axes
             else: ax = axes[index]
+
+            plt.sca(ax)
 
             plt.xlabel('Time (a.u.)')
             plt.ylabel('Available tasks')

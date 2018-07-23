@@ -10,6 +10,7 @@ from schedule import Schedule
 """
 Main testing
 """
+
 def main():
 
     # this is a declaration of tasks with different blocks of active/inactive time
@@ -19,6 +20,9 @@ def main():
     t4 = Task(timeblocks = [Active(2),Inactive(2),Active(1)])
     t5 = Task(timeblocks = [Active(3),Variable(),Active(3)])
     t6 = Task(timeblocks = [Active(4),Inactive(1),Active(2)])
+    t7 = Task(timeblocks = [Active(2),Inactive(2),Active(2)])
+    t8 = Task(timeblocks = [Active(1),Inactive(3),Active(2)])
+    t9 = Task(timeblocks = [Active(1),Inactive(1),Active(1)])
 
     # dictionary declaring which tasks need to happen before which
     ## i.e. t2 needs to happen before t4 & t5
@@ -28,16 +32,17 @@ def main():
             t3.name:(t5,),
             t4.name:(t6,),
             t5.name:(t6,),
+            t5.name:(t6,),
+            t6.name:(t7,t8,t9),
             }
 
     # create schedule, with any number of workers
     # be aware time scaling is rough as you increase
-    schedule = Schedule(worker_count = 1) 
+    schedule = Schedule(worker_count = 2) 
 
-    schedule.add_tasks(t1,t2,t3,t4,t5,t6) # add tasks to your schedule
+    schedule.add_tasks(t1,t2,t3,t4,t5,t6,t7,t8,t9) # add tasks to your schedule
 
     schedule.add_dependencies(graph) # add dependencies between tasks
-
 
     ### BORING ALGORITHMIC CODE ###
     ### DON'T LOOK HERE IF YOU WANT TO THINK ABOUT THIS PROBLEM WITHOUT BIAS ###
@@ -49,18 +54,43 @@ def main():
             schedule.history:   schedule.get_cost()
             }
 
+    iterations = 0
+
     while not _is_schedule_complete(schedule): 
 
+        iterations += 1
+
         for new_state in schedule.get_next_states():
-           
+
             schedule.load_state(new_state)
+
+            if schedule.tag in finished_nodes:
+                #print 'Caught you!'
+                continue
+           
             queue.put(new_state,schedule.get_cost())
             
         # pull next node based on priority
         current_state,current_cost = queue.get()
         schedule.load_state(current_state)
-        finished_nodes[current_state['history']] = current_cost 
+        finished_nodes[schedule.tag] = current_cost 
 
+        if iterations % 10000 == 0:
+            print schedule.task_start_time
+            print schedule.tag
+            print schedule.history
+            print schedule.nullblocks.values()
+            print schedule
+
+            print ''
+        '''
+        print 'History:',current_state['history']
+        print schedule
+        print ''
+        '''  
+
+    print 'Iterations used: {}'.format(iterations)
+    print 'Ending timepoint: {}'.format(schedule.timepoints.values()[0])
     schedule.plot()
 
         

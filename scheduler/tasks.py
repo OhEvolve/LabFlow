@@ -53,11 +53,11 @@ class TimeBlock(object):
     task = 'unknown'
     type = 'unknown'
 
-    def __init__(self,duration = 5):
+    def __init__(self,duration = 1):
         self.duration = duration 
 
     def __repr__(self):
-        return '{}_{}'.format(self.type[0].capitalize(),self.duration)
+        return '{}_{}'.format(self.task[0] + self.task[-1].capitalize(),self.duration)
 
 class Active(TimeBlock):
     type = 'active'
