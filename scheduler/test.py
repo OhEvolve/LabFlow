@@ -1,12 +1,77 @@
 
 from Queue import PriorityQueue
-from basic_example import Active,Inactive,Variable
-from basic_example import Task,Schedule
+
+from tasks import Task
+from tasks import Active,Inactive,Variable
+
+from schedule import Schedule
+
+
+"""
+Main testing
+"""
+def main():
+
+    # this is a declaration of tasks with different blocks of active/inactive time
+    t1 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
+    t2 = Task(timeblocks = [Active(1),Inactive(2),Active(2)])
+    t3 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
+    t4 = Task(timeblocks = [Active(2),Inactive(2),Active(1)])
+    t5 = Task(timeblocks = [Active(3),Variable(),Active(3)])
+    t6 = Task(timeblocks = [Active(4),Inactive(1),Active(2)])
+
+    # dictionary declaring which tasks need to happen before which
+    ## i.e. t2 needs to happen before t4 & t5
+    graph = {
+            t1.name:(t4,),
+            t2.name:(t4,t5),
+            t3.name:(t5,),
+            t4.name:(t6,),
+            t5.name:(t6,),
+            }
+
+    # create schedule, with any number of workers
+    # be aware time scaling is rough as you increase
+    schedule = Schedule(worker_count = 1) 
+
+    schedule.add_tasks(t1,t2,t3,t4,t5,t6) # add tasks to your schedule
+
+    schedule.add_dependencies(graph) # add dependencies between tasks
+
+
+    ### BORING ALGORITHMIC CODE ###
+    ### DON'T LOOK HERE IF YOU WANT TO THINK ABOUT THIS PROBLEM WITHOUT BIAS ###
+    ### THAT MEANS YOU JOSEPH ###
+
+    queue = MyPriorityQueue()
+
+    finished_nodes = {
+            schedule.history:   schedule.get_cost()
+            }
+
+    while not _is_schedule_complete(schedule): 
+
+        for new_state in schedule.get_next_states():
+           
+            schedule.load_state(new_state)
+            queue.put(new_state,schedule.get_cost())
+            
+        # pull next node based on priority
+        current_state,current_cost = queue.get()
+        schedule.load_state(current_state)
+        finished_nodes[current_state['history']] = current_cost 
+
+    schedule.plot()
+
+        
+
+
+
+
 
 """
 PRIORITY QUEUE Classes 
 """
-
 class MyPriorityQueue(PriorityQueue):
     def __init__(self):
         PriorityQueue.__init__(self)
@@ -36,61 +101,5 @@ def _is_schedule_complete(schedule):
 
     return all((tasks_complete,timepoints_equal,timelines_equal))
 
-
-"""
-SCHEDULE Class
-"""
-
-task1 = Task(name = 'task_1',timeblocks = [Active(1),Inactive(2),Active(1)])
-task2 = Task(name = 'task_2',timeblocks = [Active(1),Inactive(2),Active(2)])
-task3 = Task(name = 'task_3',timeblocks = [Active(1),Inactive(2),Active(1)])
-
-schedule = Schedule(worker_count = 2)
-
-schedule.add_task(task1)
-schedule.add_task(task2)
-schedule.add_task(task3)
-
-
-queue = MyPriorityQueue()
-
-finished_nodes = {
-        schedule.history:   schedule.get_cost()
-        }
-
-while not _is_schedule_complete(schedule): 
-
-    for new_state in schedule.get_next_states():
-       
-        schedule.load_state(new_state)
-
-        #print 'Local history:',schedule.history
-    
-        queue.put(new_state,schedule.get_cost())
-        
-    # pull next node based on priority
-    current_state,current_cost = queue.get()
-    schedule.load_state(current_state)
-    finished_nodes[current_state['history']] = current_cost 
-
-print schedule
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main()

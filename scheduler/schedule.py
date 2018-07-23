@@ -1,73 +1,18 @@
 
+
 # standard libraries
 import copy
 
 # nonstandard libraries
 import matplotlib.pyplot as plt
-from graphviz import Digraph
-import networkx as nx
+from matplotlib.patches import Rectangle
 
+# homegrown libraries
+from tasks import Task,Active
 
-"""
-TASK Class
-"""
-
-def _make_timesections(tbs):
-    """ Breaks list of timeblocks into sections (divided by variable) """
-    sections,sub = [],[]
-    for tb in tbs:
-        if tb.type == 'variable':
-            sections.append(sub) 
-            sub = []
-        else:
-            sub.append(tb)
-    sections.append(sub) 
-    return sections 
-
-class Task(object):
-
-    def __init__(self,timeblocks = [],name = 'my_task'):
-        
-        # check that all passed timeblocks are right
-        if not all((isinstance(tb,TimeBlock) for tb in timeblocks)):
-            raise TypeError('Not all elements in timeblock list are timeblocks!')
-
-        # associate each timeblock with task name
-        for tb in timeblocks:
-            tb.task = name
-
-        # assign basic properties
-        self.timeblocks = timeblocks
-        self.timesections = _make_timesections(timeblocks)
-        self.name = name
-
-    def __repr__(self):
-        return 'Task {} - {}'.format(self.name,','.join([str(tb) for tb in self.timeblocks]))
-
-
-"""
-TIMEBLOCK Classes
-"""
-
-class TimeBlock(object):
-
-    task = 'unknown'
-    type = 'unknown'
-
-    def __init__(self,duration = 5):
-        self.duration = duration 
-
-    def __repr__(self):
-        return '{}_{}'.format(self.type[0].capitalize(),self.duration)
-
-class Active(TimeBlock):
-    type = 'active'
-
-class Inactive(TimeBlock):
-    type = 'inactive'
-
-class Variable(TimeBlock):
-    type = 'variable'
+# library mods
+#plt.rcParams["font.family"] = "Times New Roman"
+plt.style.use('ggplot')
 
 
 """
@@ -93,6 +38,8 @@ class Schedule(object):
         self.nullblocks = dict([(name,0)    for name in worker_names])
         self.timepoints = dict([(name,0)    for name in worker_names])
         self.task_states = []
+        self.task_requirements = []
+        self.task_map = {}
         self.history = ''
 
         # build a default nulltask
@@ -106,9 +53,37 @@ class Schedule(object):
 
     def add_task(self,new_task):
 
+        # check for name uniqueness
+        if new_task in self.task_map:
+            print 'New task needs unique name!'
+            return None
+
         self.tasks += [new_task]
-        self.task_states = [0 for _ in self.tasks]
+        self.task_states.append(0)  
         self.max_task_states = [len(task.timesections) for task in self.tasks]
+        self.task_requirements.append(0)
+        self.task_map[new_task.name] = len(self.tasks) - 1
+
+    def add_tasks(self,*new_tasks):
+        """ Add multiple tasks simultaneously """
+        for new_task in new_tasks: self.add_task(new_task)
+
+    def add_dependencies(self,graph):
+        """ Add dependencies between tasks """
+        self._dependency_map = {}
+        
+        for name,tasks in graph.items():
+            source_id = self.task_map[name] # get index for source task
+            # iterate through sink tasks
+            self._dependency_map[source_id] = [self.task_map[task.name] 
+                    if isinstance(task,Task) 
+                    else task_map[task] 
+                    for task in tasks]
+            
+            # add requirement count to task_requirements
+            for sink_id in self._dependency_map[source_id]:
+                self.task_requirements[sink_id] += 1
+
 
     def get_cost(self):
         return sum(self.nullblocks.values())
@@ -119,6 +94,7 @@ class Schedule(object):
                 'nullblocks':   self.nullblocks,
                 'timepoints':   self.timepoints,
                 'task_states': self.task_states,
+                'task_requirements': self.task_requirements,
                 'timelines':     self.timelines,
                 'history':         self.history,
                 }
@@ -128,6 +104,7 @@ class Schedule(object):
         self.nullblocks  =  state['nullblocks']
         self.timepoints  =  state['timepoints']
         self.task_states = state['task_states']
+        self.task_requirements = state['task_requirements']
         self.timelines   =   state['timelines']
         self.history     =     state['history']
 
@@ -178,16 +155,12 @@ class Schedule(object):
         else:
             state['task_states'][task_index] += 1
             state['history'] += '-> {}'.format(task_index)
-
-        '''
-        print 'Previous state:', state
-        for k,v in self.get_state().items():
-            print '>',k,v
-        print 'Merged state:', state
-        for k,v in state.items():
-            print '>',k,v
-        print '\n'
-        '''
+            # if task is completed, update requirements
+            if state['task_states'][task_index] == self.max_task_states[task_index] \
+                    and task_index in self._dependency_map:
+                # decrease task requirements if task is complete
+                for sink_id in self._dependency_map[task_index]: 
+                    state['task_requirements'][sink_id] += -1
 
         return state
 
@@ -204,6 +177,7 @@ class Schedule(object):
         for i,task in enumerate(self.tasks):
             
             if self.task_states[i] == self.max_task_states[i]: continue # if a task is complete
+            if self.task_requirements[i] > 0: continue # if there are remaining requirements 
 
             timeblocks = task.timesections[self.task_states[i]] # get active timesection of task
             new_state = self._merge_worker_timeblocks(i,*timeblocks)
@@ -214,59 +188,49 @@ class Schedule(object):
 
         return next_states
 
-
-
-    '''
     def plot(self):
 
         height = 0.5
+        colors = ['blue','green','yellow','red','orange','purple','pink']
 
-        #color_map = dict([(n,c) for n,c in zip(self._task_names,colors)])
-        xpos_map = dict([(n,i+1) for i,n in enumerate(self._task_names)])
+        color_map = dict([(task.name,c) for task,c in zip(self.tasks,colors)])
+        ypos_map = dict([(task.name,i+1) for i,task in enumerate(self.tasks)])
 
-        fig,axes = plt.subplots(len(self.worker_names),1)
+        color_map['null'] = 'grey'
+        ypos_map['null'] = i + 2
 
-        for worker_index,name in enumerate(self.worker_names):
+        fig,axes = plt.subplots(1,self.worker_count,figsize = (4*self.worker_count,4))
 
-            for tb in self.worker_schedule[name]:
+
+        for index,(name,timeline) in enumerate(self.timelines.items()):
+
+            if self.worker_count == 1: ax = axes
+            else: ax = axes[index]
+
+            plt.xlabel('Time (a.u.)')
+            plt.ylabel('Available tasks')
+            plt.yticks(ypos_map.values(),ypos_map.keys())
+
+            ax.set_title('> {} <'.format(name))
+            xpos = 0
+
+            ax.set_xlim((0,max(self.timepoints.values())))
+            ax.set_ylim((1 - height,i + 2 + height))
+
+            for tb in timeline:
+
                 if tb.type == 'active':
-                    Rectange((xpos_map[tb.task],ypos + 1 - height/2),tb.duration,height,color=color_map[tb.task])
-                if tb.type == 'inactive':
-                    plt.plot((xpos[tb.task]) 
-    '''
 
+                    rect = Rectangle((xpos,ypos_map[tb.task] - height/2),
+                        1,height,color=color_map[tb.task])
+                    ax.add_patch(rect)
+                    xpos += 1
 
+        plt.show(block=False)
+        raw_input('Press enter to close')
+        plt.close()
 
-if __name__ == "__main__":
-
-    task1 = Task(name = 'task_1',timeblocks = [Active(1),Inactive(2),Active(1)])
-    task2 = Task(name = 'task_2',timeblocks = [Active(1),Inactive(2),Active(2)])
-    task3 = Task(name = 'task_3',timeblocks = [Active(1),Inactive(2),Active(1)])
-
-    schedule = Schedule(workers = 1)
-
-    schedule.add_task(task1)
-    schedule.add_task(task2)
-    schedule.add_task(task3)
-
-
-    for i in xrange(5):
-        states = schedule.get_next_states()
-        schedule.load_state(states[-1])
-        print schedule.history
-
-    print schedule
-
-
-
-
-
-
-
-
-
-
-
+        
 
 
 
