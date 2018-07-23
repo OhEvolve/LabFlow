@@ -1,5 +1,7 @@
 
 from Queue import PriorityQueue
+from basic_example import Active,Inactive,Variable
+from basic_example import Task,Schedule
 
 """
 PRIORITY QUEUE Classes 
@@ -11,77 +13,76 @@ class MyPriorityQueue(PriorityQueue):
         self.counter = 0
 
     def put(self, item, priority):
-        PriorityQueue.put(self, (priority, self.counter, item, ))
+        PriorityQueue.put(self, (priority, self.counter, item,))
         self.counter += 1
 
     def get(self, *args, **kwargs):
-        dist,_, item, _ = PriorityQueue.get(self, *args, **kwargs)
+        dist,_, item = PriorityQueue.get(self, *args, **kwargs)
         return item,dist
 
-"""
-TIMEBLOCK Classes
-"""
 
-class TimeBlock(object):
+def _is_schedule_complete(schedule):
 
-    type = 'unknown'
+    tp0 = schedule.timepoints.values()[0]
+    tl0 = schedule.timelines.values()[0]
 
-    def __init__(self,duration = 5):
-        self.duration = duration 
+    tasks_complete   = schedule.task_states == schedule.max_task_states
 
-    def __repr__(self):
-        return '{} timeblock - {} units'.format(self.type.capitalize(),self.duration)
+    timepoints_equal = all(schedule.timepoints[name]  == len(schedule.timelines[name])
+            for name in schedule.worker_names)
+            
+    timelines_equal = all(len(x) == len(tl0)
+            for x in schedule.timelines.values())
 
-class Active(TimeBlock):
-    type = 'active'
+    return all((tasks_complete,timepoints_equal,timelines_equal))
 
-class Inactive(TimeBlock):
-    type = 'inactive'
-
-class Variable(TimeBlock):
-    type = 'variable'
 
 """
 TESTING Script
 """
 
-task1 = [Active(2),Inactive(3),Active(2)]
-task2 = [Active(2),Inactive(2),Active(2)]
-task3 = [Active(1),Variable(),Active(1)]
+task1 = Task(name = 'task_1',timeblocks = [Active(1),Inactive(2),Active(1)])
+task2 = Task(name = 'task_2',timeblocks = [Active(1),Inactive(2),Active(2)])
+task3 = Task(name = 'task_3',timeblocks = [Active(1),Inactive(2),Active(1)])
 
-tasks = [task1,task2,task3]
+schedule = Schedule(worker_count = 2)
 
-current_node = tuple(0 for _ in tasks)
-current_distance = tuple(0 for _ in tasks)
+schedule.add_task(task1)
+schedule.add_task(task2)
+schedule.add_task(task3)
 
-final_node = tuple(1 + sum(isinstance(x,Variable) for x in task) for task in tasks)
 
 queue = MyPriorityQueue()
 
-finished_nodes = {current_node: 0}
+finished_nodes = {
+        schedule.history:   schedule.get_cost()
+        }
 
-def next_nodes(state):
-    return [tuple(s2 if i != j else s2 + 1 for j,s2 in enumerate(state)) for i,s1 in enumerate(state) if s1 < final_node[i]]
+while not _is_schedule_complete(schedule): 
 
-def distance(current_node,next_node):
-    dist = 2 
-    return finished_nodes[current_node] + dist 
-    
-
-
-while current_node != final_node:
-
-    print 'Current node:', current_node
-    print 'Current distance:', current_distance
-    
-    for next_node in next_nodes(current_node):
+    for new_state in schedule.get_next_states():
        
-        node_distance = distance(current_node,next_node)
-        queue.put(next_node,node_distance)
+        schedule.load_state(new_state)
+
+        #print 'Local history:',schedule.history
+
+    
+        queue.put(new_state,schedule.get_cost())
         
     # pull next node based on priority
-    current_node,current_distance = queue.get()
-    finished_nodes[current_node] = current_distance
+    current_state,current_cost = queue.get()
+    schedule.load_state(current_state)
+    finished_nodes[current_state['history']] = current_cost 
+
+    '''
+    print 'History:',current_state['history']
+    for k,v in current_state.items():
+        print ' ->',k,v
+    '''
+
+for k,v in schedule.get_state().items():
+    print '>',k,':',v
+
 
     
 
