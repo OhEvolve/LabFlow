@@ -1,10 +1,21 @@
 
+# standard libraries
+import time 
+
+# nonstandard libraries
+
+# homegrown libraries
 from Queue import PriorityQueue
 
 from tasks import Task
 from tasks import Active,Inactive,Variable
-
 from schedule import Schedule
+
+"""
+NOTES:
+    Want to implement step/class solution
+        Find equivilence classes of solutions
+"""
 
 
 """
@@ -12,6 +23,8 @@ Main testing
 """
 
 def main():
+
+    start = time.time()
 
     # this is a declaration of tasks with different blocks of active/inactive time
     t1 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
@@ -38,7 +51,7 @@ def main():
 
     # create schedule, with any number of workers
     # be aware time scaling is rough as you increase
-    schedule = Schedule(worker_count = 2) 
+    schedule = Schedule(worker_count = 1) 
 
     schedule.add_tasks(t1,t2,t3,t4,t5,t6,t7,t8,t9) # add tasks to your schedule
 
@@ -76,24 +89,20 @@ def main():
         finished_nodes[schedule.tag] = current_cost 
 
         if iterations % 10000 == 0:
-            print schedule.task_start_time
-            print schedule.tag
-            print schedule.history
-            print schedule.nullblocks.values()
-            print schedule
 
+            print 'Checkpoint:'
+            print '>',schedule.task_start_time
+            print '>',schedule.tag
+            print '>',schedule.history
+            print '>',schedule.nullblocks.values()
             print ''
-        '''
-        print 'History:',current_state['history']
-        print schedule
-        print ''
-        '''  
+
+    print 'Time to completion: {}'.format(time.time() - start)    
 
     print 'Iterations used: {}'.format(iterations)
     print 'Ending timepoint: {}'.format(schedule.timepoints.values()[0])
     schedule.plot()
 
-        
 
 
 

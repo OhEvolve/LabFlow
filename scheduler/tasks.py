@@ -7,12 +7,14 @@ TASK Class
 def _make_timesections(tbs):
     """ Breaks list of timeblocks into sections (divided by variable) """
     sections,sub = [],[]
+
     for tb in tbs:
         if tb.type == 'variable':
             sections.append(sub) 
             sub = []
         else:
             sub.append(tb)
+
     sections.append(sub) 
     return sections 
 
@@ -36,6 +38,7 @@ class Task(object):
         # assign basic properties
         self.timeblocks = timeblocks
         self.timesections = _make_timesections(timeblocks)
+        self.binary_timesections = [[1 if tb.type == 'active' else 0 for tb in ts for _ in xrange(tb.duration)] for ts in self.timesections]
         self.name = name
 
         Task.counter += 1

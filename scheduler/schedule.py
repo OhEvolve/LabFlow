@@ -43,21 +43,33 @@ class Schedule(object):
         self.task_map = {}
         self.history = ''
 
+        # init dependencies between task completions
+        self._dependency_map = {}
+
         # build a default nulltask
         self._nullblock = Task(name = 'null',timeblocks = [Active(1)])
         
-        # 
         #self.create_new_schedule()
+
+    @property
+    def binary_timelines_header(self): 
+        
+        return [[0 if tb == None else 1 for tb in self.timelines[name][self.timepoints[name]:]] for name in self.worker_names] 
 
     @property
     def tag(self):
 
+        return '{} {}'.format(
+                self.timepoints.values(),
+                self.task_states
+                )
+
+        '''
         return '{} {} {}'.format(
                 self.timepoints.values(),
                 self.task_start_time,
                 self.task_states
                 )
-        '''
         return '{} {} {}'.format(
                 self.timepoints.values(),
                 self.nullblocks.values(),
@@ -88,7 +100,6 @@ class Schedule(object):
 
     def add_dependencies(self,graph):
         """ Add dependencies between tasks """
-        self._dependency_map = {}
         
         for name,tasks in graph.items():
             source_id = self.task_map[name] # get index for source task
