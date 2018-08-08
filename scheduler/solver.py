@@ -6,16 +6,16 @@ import time
 
 # homegrown libraries
 from Queue import PriorityQueue
-#from schedule import ScheduleViewer
-
+from scheduler import Scheduler 
 from tasks import Task
 from tasks import Active,Inactive,Variable
-from schedule_with_classes import Scheduler as Schedule
+from defaults import default_options
 
 """
+
 NOTES:
     Want to implement step/class solution
-        Find equivilence classes of solutions
+        X Find equivilence classes of solutions
 
     Check if tag is already stored Mm...  Tag consists of:
             set(timepoints - min(timepoints))
@@ -26,72 +26,29 @@ NOTES:
 Main testing
 """
 
-finished_nodes = {}
-finished_edges = {}
 
+def create_optimal_schedule(tasks,dependencies={},**user_options):
 
-def _get_progression(current_tag,finished_edges):
+    options = default_options
 
-    action_order = []
+    for option,value in user_options.items():
+        
+        if not option in options:
+            raise KeyError('Option not recognized ({})!'.format(option))
+        options[option] = value
 
-    while current_tag in finished_edges:
-        (move,previous_tag) = finished_edges[current_tag][0]
-        #action_order.append('{} ({})'.format(move,len(finished_edges[current_tag])))
-        action_order.append(move)
-        current_tag = previous_tag
-
-    return action_order[::-1]
-
-
-def main():
+    worker_count = options['worker_count'] 
+    worker_names = options['worker_names'] 
 
     start = time.time()
 
-    schedule = Schedule(worker_count = 1) 
+    schedule = Scheduler(worker_count = worker_count,worker_names = worker_names) 
 
-    # this is a declaration of tasks with different blocks of active/inactive time
-
-    """#
-    t1 = Task(timeblocks = [Active(2)])
-    t2 = Task(timeblocks = [Active(2)])
-    t3 = Task(timeblocks = [Active(2)])
-    
-    graph = {
-            t1.name:(t3,),
-            t2.name:(t3,),
-            }
-
-    schedule.add_tasks(t1,t2,t3) # add tasks to your schedule
-    #"""
-
-    #"""#
-    t1 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
-    t2 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
-    t3 = Task(timeblocks = [Active(1),Inactive(2),Active(1)])
-    t4 = Task(timeblocks = [Active(2),Inactive(2),Active(1)])
-    t5 = Task(timeblocks = [Active(3),Variable(), Active(3)])
-    t6 = Task(timeblocks = [Active(4),Inactive(1),Active(2)])
-    t7 = Task(timeblocks = [Active(2),Inactive(2),Active(2)])
-    t8 = Task(timeblocks = [Active(1),Inactive(3),Active(2)])
-    t9 = Task(timeblocks = [Active(1),Inactive(1),Active(1)])
-
-    # dictionary declaring which tasks need to happen before which
-    ## i.e. t2 needs to happen before t4 & t5
-
-    graph = {
-            t1.name:(t4,),
-            t2.name:(t4,t5),
-            t3.name:(t5,),
-            t4.name:(t6,),
-            t5.name:(t6,),
-            t5.name:(t6,),
-            t6.name:(t7,t8,t9),
-            }
-    schedule.add_tasks(t1,t2,t3,t4,t5,t6,t7,t8,t9) # add tasks to your schedule
+    schedule.add_tasks(*tasks) # add tasks to your schedule
 
     # create schedule, with any number of workers
     # be aware time scaling is rough as you increase
-    schedule.add_dependencies(graph) # add dependencies between tasks
+    schedule.add_dependencies(dependencies) # add dependencies between tasks
 
     queue = MyPriorityQueue()
     
@@ -101,6 +58,9 @@ def main():
     previous_tag = None
 
     iterations = 0
+
+    finished_nodes = {}
+    finished_edges = {}
 
     ### Function to check for exisiting tag
 
@@ -129,9 +89,6 @@ def main():
             # this move was less favorable than existing
             pass
         return True
-
-    ###
-    ###
 
     # Main loop iterating over the growing graph structure
     
@@ -199,17 +156,11 @@ def main():
 
     schedule.view(progression) 
 
-    #viewer = ScheduleViewer(schedule)
-    #viewer.plot(progression)
-
-
-
-
-
 
 """
 PRIORITY QUEUE Classes 
 """
+
 class MyPriorityQueue(PriorityQueue):
     def __init__(self):
         PriorityQueue.__init__(self)
@@ -225,6 +176,21 @@ class MyPriorityQueue(PriorityQueue):
             return False
         dist,_, item = PriorityQueue.get(self, *args, **kwargs)
         return item,dist
+
+"""
+HELPER Functions
+"""
+
+def _get_progression(current_tag,finished_edges):
+
+    action_order = []
+
+    while current_tag in finished_edges:
+        (move,previous_tag) = finished_edges[current_tag][0]
+        action_order.append(move)
+        current_tag = previous_tag
+
+    return action_order[::-1]
 
 
 

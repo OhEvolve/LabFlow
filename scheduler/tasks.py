@@ -4,26 +4,12 @@
 TASK Class
 """
 
-def _make_timesections(tbs):
-    """ Breaks list of timeblocks into sections (divided by variable) """
-    sections,sub = [],[]
-
-    for tb in tbs:
-        if tb.type == 'variable':
-            sections.append(sub) 
-            sub = []
-        else:
-            sub.append(tb)
-
-    sections.append(sub) 
-    return sections 
-
 class Task(object):
 
     counter = 1
 
     def __init__(self,timeblocks = [],name = None):
-        
+
         # check that all passed timeblocks are right
         if not all((isinstance(tb,TimeBlock) for tb in timeblocks)):
             raise TypeError('Not all elements in timeblock list are timeblocks!')
@@ -72,6 +58,24 @@ class Variable(TimeBlock):
     type = 'variable'
 
 
+"""
+HELPER Functions
+"""
+
+def _make_timesections(tbs):
+
+    """ Breaks list of timeblocks into sections (divided by variable) """
+    sections,sub = [],[]
+
+    for tb in tbs:
+        if tb.type == 'variable':
+            sections.append(sub) 
+            sub = []
+        else:
+            sub.append(tb)
+
+    sections.append(sub) 
+    return sections 
 
 
 

@@ -251,7 +251,7 @@ class Scheduler(object):
         task_states = [0 for _ in self.tasks]  
 
         # iterate through move choices
-        for move in progression:
+        for move_index,move in enumerate(progression):
 
             name,current_time = self._set_available_worker_name() # get worker with lowest timepoint
 
@@ -266,17 +266,31 @@ class Scheduler(object):
 
             for tb in timeblocks:
                 # skip if inactive time
-                if tb.type == 'inactive': continue
+
+                print ''
+                print 'Tb:',tb
+                print 'Tb:',tb.type
+                print 'Tb:',tb.task
+
+                print 'Tl:',self.timelines.values()[0]
+
                 # otherwise, replace None with activity
                 for _ in xrange(tb.duration):
-                    try:
-                        self.timelines[name][current_time + add_timer] = tb
-                    except IndexError:
-                        self.timelines[name] += [tb]
+                    if tb.type == 'active':
+                        try:
+                            self.timelines[name][current_time + add_timer] = tb
+                        except IndexError:
+                            self.timelines[name] += [tb]
+                    if tb.type == 'inactive':
+                        try:
+                            self.timelines[name][current_time + add_timer]
+                        except IndexError:
+                            self.timelines[name] += [None]
                     add_timer += 1
 
                 if self.timelines[name][-1] != None:
                     self.timelines[name] += [None]
+
 
         for name,tl in self.timelines.items():
             self.timelines[name] = tl[:-1]
@@ -317,7 +331,13 @@ class Scheduler(object):
 
             for tb in timeline:
 
-                if tb.type == 'active':
+                if tb == None:
+                    rect = Rectangle((xpos,ypos_map["null"] - height/2),
+                        1,height,color=color_map["null"])
+                    ax.add_patch(rect)
+                    xpos += 1
+
+                elif tb.type == 'active':
 
                     rect = Rectangle((xpos,ypos_map[tb.task] - height/2),
                         1,height,color=color_map[tb.task])
