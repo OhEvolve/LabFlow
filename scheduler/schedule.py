@@ -9,6 +9,7 @@ from matplotlib.patches import Rectangle
 
 # homegrown libraries
 from tasks import Task,Active
+from schedule_with_classes import Scheduler as Schedule
 
 # library mods
 #plt.rcParams["font.family"] = "Times New Roman"
@@ -19,29 +20,26 @@ plt.style.use('ggplot')
 SCHEDULE Classes
 """
 
-class Schedule(object):
+class ScheduleViewer(Schedule):
 
-    def __init__(self,worker_count = 2,worker_names = None):
+    def __init__(self,schedule):
 
-        if worker_names == None: 
-            worker_names = ['worker_{}'.format(i+1) for i in xrange(worker_count)] 
+        if not isinstance(schedule,Schedule):
+            raise TypeError('Need to import schedule object')
+
+        # load attributes
+        self.worker_count = schedule.worker_count
+        self.worker_names = schedule.worker_names
         
-        # worker properties
-        self.worker_count = worker_count
-        self.worker_names = worker_names
-
-        # worker tasks
-        self.tasks = []
-
         # state characteristics
-        self.timelines  = dict([(name,[]) for name in worker_names])
-        self.nullblocks = dict([(name,0)    for name in worker_names])
-        self.timepoints = dict([(name,0)    for name in worker_names])
+        self.tasks = []
+        self.timelines  = dict([(name,[]) for name in self.worker_names])
+        self.nullblocks = dict([(name,0)    for name in self.worker_names])
+        self.timepoints = dict([(name,0)    for name in self.worker_names])
         self.task_states = []
         self.task_requirements = []
         self.task_start_time = []
         self.task_map = {}
-        self.history = ''
 
         # init dependencies between task completions
         self._dependency_map = {}
@@ -49,37 +47,15 @@ class Schedule(object):
         # build a default nulltask
         self._nullblock = Task(name = 'null',timeblocks = [Active(1)])
         
+        # load existing tasks
+        self.add_tasks(*schedule.tasks)
+
         #self.create_new_schedule()
-
-    @property
-    def binary_timelines_header(self): 
-        
-        return [[0 if tb == None else 1 for tb in self.timelines[name][self.timepoints[name]:]] for name in self.worker_names] 
-
-    @property
-    def tag(self):
-
-        return '{} {}'.format(
-                self.timepoints.values(),
-                self.task_states
-                )
-
-        '''
-        return '{} {} {}'.format(
-                self.timepoints.values(),
-                self.task_start_time,
-                self.task_states
-                )
-        return '{} {} {}'.format(
-                self.timepoints.values(),
-                self.nullblocks.values(),
-                self.task_states
-                )
-        '''
 
     def __repr__(self):
         return '\n'.join(('{} - {}'.format(name,','.join((str(tb) for tb in self.timelines[name]))) for name in self.worker_names))
 
+    """ Overwrite existing definition """
     def add_task(self,new_task):
 
         # check for name uniqueness
@@ -94,61 +70,14 @@ class Schedule(object):
         self.task_start_time.append(0)
         self.task_map[new_task.name] = len(self.tasks) - 1
 
-    def add_tasks(self,*new_tasks):
-        """ Add multiple tasks simultaneously """
-        for new_task in new_tasks: self.add_task(new_task)
-
-    def add_dependencies(self,graph):
-        """ Add dependencies between tasks """
-        
-        for name,tasks in graph.items():
-            source_id = self.task_map[name] # get index for source task
-            # iterate through sink tasks
-            self._dependency_map[source_id] = [self.task_map[task.name] 
-                    if isinstance(task,Task) 
-                    else task_map[task] 
-                    for task in tasks]
-            
-            # add requirement count to task_requirements
-            for sink_id in self._dependency_map[source_id]:
-                self.task_requirements[sink_id] += 1
+    #"""
 
 
-    def get_cost(self):
-        return sum(self.nullblocks.values())
 
-    def get_state(self): 
-        """ Get current schedule configuration """
-        return {
-                'nullblocks':   self.nullblocks,
-                'timepoints':   self.timepoints,
-                'task_states': self.task_states,
-                'task_requirements': self.task_requirements,
-                'task_start_time': self.task_start_time,
-                'timelines':     self.timelines,
-                'history':         self.history,
-                }
 
-    def load_state(self,state):
-        """ Load schedule with a particular configuration """
-        self.nullblocks  =  state['nullblocks']
-        self.timepoints  =  state['timepoints']
-        self.task_states = state['task_states']
-        self.task_requirements = state['task_requirements']
-        self.task_start_time = state['task_start_time']
-        self.timelines   =   state['timelines']
-        self.history     =     state['history']
 
-    def _set_available_worker_name(self):
+    #"""
 
-        names = self.timepoints.keys()
-        timepoints = self.timepoints.values()
-        min_timepoint = min(timepoints)
-
-        self.available_worker_name = names[timepoints.index(min_timepoint)]
-
-        return (self.available_worker_name,min_timepoint)
-        
     def _merge_worker_timeblocks(self,task_index,*timeblocks):
         """ """
 
@@ -178,55 +107,46 @@ class Schedule(object):
             else:
                 timepoint += 1 
 
-        state = copy.deepcopy(self.get_state())      # create nullblock addition for next state
-
-        state['timelines'][name] = timeline
-        state['timepoints'][name] = timepoint
+        self.timelines[name] = timeline
+        self.timepoints[name] = timepoint
 
         # adjust state variable
         if task_index == 'null':
-            state['nullblocks'][name] += 1
-            state['history'] += '-> null'
+            self.nullblocks[name] += 1
         else:
-            state['task_states'][task_index] += 1
-            state['history'] += '-> {}'.format(task_index)
+            self.task_states[task_index] += 1
             # if task is completed, update requirements
-            if state['task_states'][task_index] == self.max_task_states[task_index] \
+            if self.task_states[task_index] == self.max_task_states[task_index] \
                     and task_index in self._dependency_map:
-                state['task_start_time'][task_index] = -1 
+                self.task_start_time[task_index] = -1 
                 # decrease task requirements if task is complete
                 for sink_id in self._dependency_map[task_index]: 
-                    state['task_requirements'][sink_id] += -1
-                    state['task_start_time'][sink_id] = completion_time 
+                    self.task_requirements[sink_id] += -1
+                    self.task_start_time[sink_id] = completion_time 
 
-        return state
 
-    def get_next_states(self):
-        """ Returns a list of next states, from current """ 
-        starting_state = self.get_state()             # create nullblock addition for next state
-        next_states = []                              # initialize storage variable
+    def _set_available_worker_name(self):
 
-        _,current_time = self._set_available_worker_name() # get worker with lowest timepoint
+        names = self.timepoints.keys()
+        timepoints = self.timepoints.values()
+        min_timepoint = min(timepoints)
+        self.available_worker_name = names[timepoints.index(min_timepoint)]
 
-        new_state = self._merge_worker_timeblocks('null',*self._nullblock.timeblocks)
-        next_states.append(new_state)
+        return (self.available_worker_name,min_timepoint)
 
-        for i,task in enumerate(self.tasks):
-            
-            if self.task_start_time[i] > current_time: continue # if task requirements not done
-            if self.task_states[i] == self.max_task_states[i]: continue # if a task is complete
-            if self.task_requirements[i] > 0: continue # if there are remaining requirements 
 
-            timeblocks = task.timesections[self.task_states[i]] # get active timesection of task
-            new_state = self._merge_worker_timeblocks(i,*timeblocks)
-            
-            if new_state == False: continue
-            
-            next_states.append(new_state)
+    def plot(self,progression):
 
-        return next_states
+        for move in progression:
 
-    def plot(self):
+            _,current_time = self._set_available_worker_name() # get worker with lowest timepoint
+
+            if move == 'null':
+                new_state = self._merge_worker_timeblocks('null',*self._nullblock.timeblocks)
+            else:
+                task = self.tasks[move]
+                timeblocks = task.timesections[self.task_states[move]]
+                new_state = self._merge_worker_timeblocks(move,*timeblocks)
 
         height = 0.5
         colors = ['blue','green','yellow','red','orange','purple','pink','teal','brown']

@@ -1,5 +1,4 @@
 
-
 # standard libraries
 import copy
 
@@ -20,7 +19,7 @@ plt.style.use('ggplot')
 SCHEDULE Classes
 """
 
-class QuickScheduler(object):
+class Scheduler(object):
 
     def __init__(self,worker_count = 2,worker_names = None):
 
@@ -37,6 +36,9 @@ class QuickScheduler(object):
         self.max_task_states = []
         self.max_task_requirements = []
         self.task_map = {}
+
+        # init dependencies between task completions
+        self._dependency_map = {}
 
         self._nullblock = Task(name = 'null',timeblocks = [Active(1)])
 
@@ -92,7 +94,8 @@ class QuickScheduler(object):
 
     def add_tasks(self,*new_tasks):
         """ Add multiple tasks simultaneously """
-        for new_task in new_tasks: self.add_task(new_task)
+        for new_task in new_tasks: 
+            self.add_task(new_task)
 
     def add_dependencies(self,graph):
         """ Add dependencies between tasks """
@@ -186,6 +189,144 @@ class QuickScheduler(object):
 
         return next_states
 
+    def _set_available_worker_name(self):
+
+        names = self.timelines.keys()
+        timepoints = [tl.index(None) for tl in self.timelines.values()]
+        min_timepoint = min(timepoints)
+        self.available_worker_name = names[timepoints.index(min_timepoint)]
+        return (self.available_worker_name,min_timepoint)
+
+    def _merge_worker_timeblocks(self,task_index,*timeblocks):
+        """ """
+        name = self.available_worker_name
+
+        timeline = list(self.timelines[name])
+        timepoint = self.timepoints[name]
+        task_timeline = [tb for tb in timeblocks for _ in xrange(tb.duration)]
+        duration = len(task_timeline)
+
+        completion_time = timepoint + duration # when finished, used in dependencies 
+
+        if len(timeline) < completion_time:
+            timeline += [None for _ in xrange(timepoint + duration - len(timeline))]
+
+        # create merged timeline object (if possible)
+        for i,(moment,task_moment) in enumerate(zip(timeline[timepoint:],task_timeline)):
+            if moment != None and task_moment.type == 'active': # if there is a conflict for activity times
+                return False # return a failure
+            elif task_moment.type == 'active':
+                timeline[i + timepoint] = task_moment 
+
+        # find the first available timeblock
+        for added_moments,moment in enumerate(timeline[timepoint:]):
+            if moment == None:
+                break 
+            else:
+                timepoint += 1 
+
+        self.timelines[name] = timeline
+        self.timepoints[name] = timepoint
+
+        # adjust state variable
+        if task_index == 'null':
+            self.nullblocks[name] += 1
+        else:
+            self.task_states[task_index] += 1
+            # if task is completed, update requirements
+            if self.task_states[task_index] == self.max_task_states[task_index] \
+                    and task_index in self._dependency_map:
+                self.task_start_time[task_index] = -1 
+                # decrease task requirements if task is complete
+                for sink_id in self._dependency_map[task_index]: 
+                    self.task_requirements[sink_id] += -1
+                    self.task_start_time[sink_id] = completion_time 
+
+        
+    def view(self,progression):
+        """ View a choice progression """
+
+        # initialize some variables
+        self.timelines  = dict([(name,[None]) for name in self.worker_names])
+        task_states = [0 for _ in self.tasks]  
+
+        # iterate through move choices
+        for move in progression:
+
+            name,current_time = self._set_available_worker_name() # get worker with lowest timepoint
+
+            # decide what the next timeblocks are going to be
+            if move == 'null':
+                timeblocks = self._nullblock.timeblocks
+            else:
+                task = self.tasks[move]
+                timeblocks = task.timesections[task_states[move]]
+            
+            add_timer = 0
+
+            for tb in timeblocks:
+                # skip if inactive time
+                if tb.type == 'inactive': continue
+                # otherwise, replace None with activity
+                for _ in xrange(tb.duration):
+                    try:
+                        self.timelines[name][current_time + add_timer] = tb
+                    except IndexError:
+                        self.timelines[name] += [tb]
+                    add_timer += 1
+
+                if self.timelines[name][-1] != None:
+                    self.timelines[name] += [None]
+
+        for name,tl in self.timelines.items():
+            self.timelines[name] = tl[:-1]
+
+        self._plot()
+
+    def _plot(self):
+
+
+        height = 0.5
+        colors = ['blue','green','yellow','red','orange','purple','pink','teal','brown']
+
+        color_map = dict([(task.name,c) for task,c in zip(self.tasks,colors)])
+        ypos_map = dict([(task.name,i+1) for i,task in enumerate(self.tasks)])
+
+        color_map['null'] = 'grey'
+        ypos_map['null'] = i + 2
+
+        fig,axes = plt.subplots(1,self.worker_count,figsize = (4*self.worker_count,4))
+
+
+        for index,(name,timeline) in enumerate(self.timelines.items()):
+
+            if self.worker_count == 1: ax = axes
+            else: ax = axes[index]
+
+            plt.sca(ax)
+
+            plt.xlabel('Time (a.u.)')
+            plt.ylabel('Available tasks')
+            plt.yticks(ypos_map.values(),ypos_map.keys())
+
+            ax.set_title('> {} <'.format(name))
+            xpos = 0
+
+            ax.set_xlim((0,max([len(tl) for tl in self.timelines.values()])))
+            ax.set_ylim((1 - height,i + 2 + height))
+
+            for tb in timeline:
+
+                if tb.type == 'active':
+
+                    rect = Rectangle((xpos,ypos_map[tb.task] - height/2),
+                        1,height,color=color_map[tb.task])
+                    ax.add_patch(rect)
+                    xpos += 1
+
+        plt.show(block=False)
+        raw_input('Press enter to close')
+        plt.close()
 
 """
 HELPER FUNCTIONS
@@ -231,10 +372,6 @@ def _reduce_header_with_timer(timeline_header,reqs):
                 break
 
     return timeline_header,[max(0,r - index) for r in reqs]
-    
-
-
-
 
 
 
