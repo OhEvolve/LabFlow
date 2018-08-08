@@ -27,6 +27,18 @@ NOTES:
 Main testing
 """
 
+def _get_progression(current_tag,finished_edges):
+
+    action_order = []
+
+    while current_tag in finished_edges:
+        (move,previous_tag) = finished_edges[current_tag][0]
+        action_order.append(move)
+        current_tag = previous_tag
+
+    return action_order[::-1]
+
+
 def main():
 
     start = time.time()
@@ -56,7 +68,7 @@ def main():
 
     # create schedule, with any number of workers
     # be aware time scaling is rough as you increase
-    schedule = Schedule(worker_count = 2) 
+    schedule = Schedule(worker_count = 3) 
     schedule.add_tasks(t1,t2,t3,t4,t5,t6,t7,t8,t9) # add tasks to your schedule
     schedule.add_dependencies(graph) # add dependencies between tasks
 
@@ -80,80 +92,82 @@ def main():
 
         iterations += 1 # add to counter
 
-        print '\nIteration {}'.format(iterations)
-        print 'current state:',current_state
+        finished_nodes[current_tag] = current_cost 
+        if iterations != 1: # if we are not on the first node
+            finished_edges[current_tag] = [(move,previous_tag)]
 
-        '''
-        print 'Finished nodes:'
-        for k,v in finished_nodes.items():
-            print k,v
-        print 'Finished edges:'
-        for k,v in finished_edges.items():
-            print k,v
-        '''
-
-        #print ''
-
-        if current_tag in finished_nodes and current_cost >= finished_nodes[current_tag]:
-            print 'in finished...',finished_nodes[new_tag]
-            current_state,current_cost = queue.get()
-            current_tag = schedule.tag(current_state)
-            
+        #print '\nCurrent state:',current_state
 
         for move,new_state in schedule.get_next_states(current_state):
 
-            print 'move/state:',move,new_state
+            #print 'New state:',move,new_state
 
             new_tag = schedule.tag(new_state)
             new_cost = new_state['cost']
 
+            #if new_tag in tested_nodes:
+            #    continue
+
             if new_tag in finished_nodes:
-                print 'in finished...',finished_nodes[new_tag]
+                #print 'in finished...',finished_nodes[new_tag]
 
                 existing_cost = finished_nodes[new_tag]
 
                 if new_cost < existing_cost:
-                    print 'Surpised to be here...'
+                    raw_input('Surpised to be here...')
                     # a new, better path to a node
                     finished_nodes[new_tag] = new_cost
                     finished_edges[new_tag] = [(move,current_tag)]
+                    continue
                 elif new_cost == existing_cost:
                     # if as good, just add as a potential path
                     finished_edges[new_tag].append((move,current_tag))
+                    print 'it exists!'
+                    continue
                 else:
                     # this move was less favorable than existing
+                    print '-------------------------------------------------------------'
+                    print 'Current state:',current_state,'\n'
+                    print 'Current progression:',_get_progression(current_tag,finished_edges),'\n'
+                    print 'State:',new_state,'\n'
+                    print 'Move:',move
+                    print 'Progression:',_get_progression(new_tag,finished_edges),'\n'
+                    print 'Existing vs. new:',existing_cost,'|',new_cost,'\n'
+                    print '-------------------------------------------------------------'
+                    print ''
+                    raw_input()
                     continue
            
             # if tag hasn't been observed before
             #finished_nodes[new_tag] = new_cost
             #finished_edges[new_tag] = (move,current_tag)
-            print 'adding new'
-            queue.put(new_state,new_state['cost'])
+            queue.put((current_state,new_state,move),new_state['cost'])
 
         # pull next node based on priority
         last_tag = current_tag
-        current_state,current_cost = queue.get()
+        (previous_state,current_state,move),current_cost = queue.get()
+        previous_tag = schedule.tag(previous_state)
         current_tag = schedule.tag(current_state)
-
-        finished_nodes[current_tag] = new_cost
-        finished_edges[current_tag].append((move,last_tag))
-        #finished_nodes[current_tag] = current_cost 
 
         if iterations % 1000 == 0 and iterations != 0:
 
-            pass
             print 'Checkpoint [{}]:'.format(iterations)
-            print '>',schedule.task_start_time
-            print '>',schedule.tag
-            print '>',schedule.history
-            print '> Timeline:',schedule.timelines
-            print '> Binary timeline:',schedule.binary_timelines_header
-            print '>',schedule.nullblocks.values()
+            print '> Cost:',finished_nodes[previous_tag]
+            print '> Tag:',previous_tag
             print ''
+
+    # final addition of last node/edge
+    finished_nodes[current_tag] = current_cost 
+    finished_edges[current_tag] = [(move,previous_tag)]
 
     print 'Time to completion: {}'.format(time.time() - start)    
     print 'Iterations used: {}'.format(iterations)
-    print 'Ending timepoint: {}'.format(schedule.timepoints.values()[0])
+
+    action_order = []
+
+    _get_progression(current_tag,finished_edges)
+
+
 
     #schedule.plot()
 

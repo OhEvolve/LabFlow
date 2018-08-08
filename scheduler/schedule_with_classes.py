@@ -65,7 +65,7 @@ class QuickScheduler(object):
         tasks_complete = (state['task_states'] == self.max_task_states) and \
                 all((s == 0 for s in state['task_requirement_timer']))
 
-        timelines_equal = all(len(x) == len(tl0)
+        timelines_equal = all(len(x) == 1
                 for x in state['timeline_header'])
 
         return all((tasks_complete,timelines_equal))
@@ -96,7 +96,7 @@ class QuickScheduler(object):
 
     def add_dependencies(self,graph):
         """ Add dependencies between tasks """
-        self._dependency_map = {}
+        self._dependency_map = dict([(i,[]) for i in xrange(len(self.tasks))])
         
         for name,tasks in graph.items():
             source_id = self.task_map[name] # get index for source task
@@ -134,7 +134,7 @@ class QuickScheduler(object):
         for i,(task_state,max_task_state) in enumerate(zip(task_states,max_task_states)):
 
             if task_state != max_task_state: continue
-            
+
             for sink_id in self._dependency_map[i]:
                 task_requirements[sink_id] += 1
 
@@ -151,25 +151,14 @@ class QuickScheduler(object):
                 'timeline_header': merged_header,
                 'task_requirement_timer': merged_requirement_timer,
             }))
-        
-        print 'Task states',task_states
-        print 'Max states',max_task_states
-        print 'Req',task_requirements
-        print 'Max req',max_task_requirements
-
-        print 'Timer:',task_requirement_timer
 
         for i,task in enumerate(self.tasks):
-            print '\nTask {}'.format(i)
             
             if task_states[i] == max_task_states[i]: 
-                print 'case 1'
                 continue # if a task is complete
             if task_requirement_timer[i] > 0: 
-                print 'case 2'
                 continue # if there are remaining requirements that are pending
             if task_requirements[i] != max_task_requirements[i]: 
-                print 'case 3'
                 continue # if there are remaining requirements 
             
             dependencies = [i] + self._dependency_map[i]
