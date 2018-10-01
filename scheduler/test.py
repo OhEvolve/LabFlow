@@ -38,7 +38,7 @@ def main():
 
     # create schedule, with any number of workers
     # be aware time scaling is rough as you increase
-    schedule = Schedule(worker_count = 2) 
+    schedule = Schedule(worker_count = 1) 
 
     schedule.add_tasks(t1,t2,t3,t4,t5,t6,t7,t8,t9) # add tasks to your schedule
 

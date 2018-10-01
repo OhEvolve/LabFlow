@@ -43,8 +43,6 @@ class Network(object):
             return False
 
         self.all_nodes.append(new_node)
-        #self.Graph.add_node(str(new_node))
-        #self.Flowchart.node(str(new_node))
 
         return True
 
