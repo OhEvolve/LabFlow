@@ -25,7 +25,6 @@ def pcr(template,*primers):
 def gibson(*fragments,limit = 18):
     """ Forward Gibson reaction for fragments with overlaps """
     products = Assembly(fragments,limit = 18)
-    for p in products.circular_products:
-        print(p)
+    return products.circular_products
     
 

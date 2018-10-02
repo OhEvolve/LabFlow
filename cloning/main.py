@@ -26,8 +26,6 @@ frag2 = reactions.pcr(pHIV,p2_5,p2_3)
 
 reactions.gibson(linear_pHIV,frag1,frag2,limit = 18)
 
-
-
 print('Amplicon:')
 
 
