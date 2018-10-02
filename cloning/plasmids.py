@@ -28,5 +28,5 @@ def get_seqname(fname):
     return os.path.splitext(base)[0]
 
 if __name__ == "__main__":
-    print get_all()
+    print(get_all())
 
