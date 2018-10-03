@@ -1,11 +1,11 @@
 
-# standard libraries
-import os
-from openpyxl import load_workbook,Workbook
+"""
+Pulls primers from xlsx
+"""
 
 # nonstandard libraries
+from openpyxl import load_workbook,Workbook
 from pydna.dseq import Dseq
-from pydna.dseqrecord import Dseqrecord
 
 
 def get_all(fname = '/home/pandyr/Dropbox (MIT)/Research/Primers.xlsx'):
@@ -23,11 +23,4 @@ def get_all(fname = '/home/pandyr/Dropbox (MIT)/Research/Primers.xlsx'):
 
     return all_data
 
-def get_seqname(fname):
-    """ Grabs file name base """
-    base = os.path.basename(fname)
-    return os.path.splitext(base)[0]
-
-if __name__ == "__main__":
-    print(get_all())
 
