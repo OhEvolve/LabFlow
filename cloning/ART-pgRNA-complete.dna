@@ -1,0 +1,185 @@
+LOCUS       name?                   2610 bp    DNA     circular UNK 12-OCT-2018
+DEFINITION  description?.
+ACCESSION   id?
+VERSION     id?
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     promoter        complement(6..246)
+                     /note="RNA polymerase III promoter for human U6 snRNA"
+                     /note="color: #ffffff"
+                     /label="U6 promoter"
+     rep_origin      complement(302..890)
+                     /direction=LEFT
+                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of
+                     replication"
+                     /note="color: #ffff00"
+                     /label="ori"
+     CDS             complement(1061..1921)
+                     /transl_table=1
+                     /gene="bla"
+                     /product="β-lactamase"
+                     /note="confers resistance to ampicillin, carbenicillin, and
+                     related antibiotics"
+                     /note="color: #ccffcc"
+                     /codon_start=1
+                     /translation="MSIQHFRVALIPFFAAFCLPVFA,HPETLVKVKDAEDQLGARVGY
+                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEY
+                     SPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDR
+                     WEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRS
+                     ALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGA
+                     SLIKHW*"
+                     /label="AmpR"
+     promoter        complement(1922..2026)
+                     /gene="bla"
+                     /label="AmpR promoter"
+                     /note="color: #ffffff"
+     promoter        complement(1963..1991)
+                     /label="amp prom"
+                     /note="/Imported_from=Pla'>http://wishart.biology.ualberta.
+                     ca/PlasMapper'>Pla sMapper   /Transferred_From=amp prom  
+                     /Transferred_Similarity=100.00%"
+                     /note="color: #ffffff"
+     promoter        2133..2373
+                     /note="RNA polymerase III promoter for human U6 snRNA"
+                     /note="color: #ffffff"
+                     /label="U6 promoter"
+     overlap         2377..2380
+                     /note="olp_vrI3kyehGMHB3OeaVvtIlpl-X7g"
+                     /chksum="vrI3kyehGMHB3OeaVvtIlpl-X7g"
+                     /ApEinfo_fwdcolor="#B3D7D7"
+                     /ApEinfo_revcolor="#AFD9DB"
+     misc_feature    2382..2402
+                     /label="nonstandard type: C-GENE"
+                     /note="/IMGT_allele=TRAC*01   /IMGT_gene=TRAC  
+                     /mol_type=genomic DNA   /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+                     /db_xref="taxon"
+     misc_feature    2403..2422
+                     /label="nonstandard type: C-GENE"
+                     /note="/IMGT_allele=TRAC*01   /IMGT_gene=TRAC  
+                     /mol_type=genomic DNA   /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+                     /db_xref="taxon"
+     misc_feature    2423..2442
+                     /label="nonstandard type: C-GENE"
+                     /note="/IMGT_allele=TRAC*01   /IMGT_gene=TRAC  
+                     /mol_type=genomic DNA   /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+                     /db_xref="taxon"
+     gap             2443..2454
+                     /estimated_length=12
+                     /label="Barcode"
+                     /note="color: #dcdcdc"
+     overlap         2461..2464
+                     /note="olp_UfAUNPcmmb2CRPvUUsvdWIHygzY"
+                     /chksum="UfAUNPcmmb2CRPvUUsvdWIHygzY"
+                     /ApEinfo_fwdcolor="#CCD7AF"
+                     /ApEinfo_revcolor="#E4F9B4"
+     mRNA            2466..2483
+                     /note="Mo-Mulv mRNA"
+                     /note="color: #a6acb3"
+                     /label="mRNA"
+     misc_feature    2466..2483
+                     /label="PBS - Pro"
+                     /note="color: #a6acb3"
+     misc_feature    2484..2489
+                     /label="poly-T"
+                     /note="color: #a6acb3"
+     misc_feature    2496..2501
+                     /label="poly-T"
+                     /note="color: #a6acb3"
+     mRNA            complement(2502..2519)
+                     /note="Mo-Mulv mRNA"
+                     /note="color: #a6acb3"
+                     /label="mRNA"
+     misc_feature    2502..2519
+                     /label="PBS - Pro"
+                     /note="color: #a6acb3"
+     overlap         2521..2524
+                     /note="olp_CbMsmFm8vEYnTU8A8C-D210yyrI"
+                     /chksum="CbMsmFm8vEYnTU8A8C-D210yyrI"
+                     /ApEinfo_fwdcolor="#EBDCFD"
+                     /ApEinfo_revcolor="#F7C2E0"
+     misc_feature    2525..2531
+                     /note="Used for ligation"
+                     /note="color: #008000"
+                     /label="BspQI"
+     gap             2536..2547
+                     /estimated_length=12
+                     /label="Barcode"
+                     /note="color: #dcdcdc"
+     misc_feature    2548..2567
+                     /db_xref="taxon"
+                     /label="nonstandard type: C-GENE"
+                     /note="G00-120-405   /IMGT_allele=TRBC1*01  
+                     /IMGT_gene=TRBC1   /IMGT_map=7q34   /mol_type=genomic DNA  
+                     /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+     misc_feature    2568..2587
+                     /db_xref="taxon"
+                     /label="nonstandard type: C-GENE"
+                     /note="G00-120-405   /IMGT_allele=TRBC1*01  
+                     /IMGT_gene=TRBC1   /IMGT_map=7q34   /mol_type=genomic DNA  
+                     /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+     misc_feature    2588..2607
+                     /db_xref="taxon"
+                     /label="nonstandard type: C-GENE"
+                     /note="G00-120-405   /IMGT_allele=TRBC1*01  
+                     /IMGT_gene=TRBC1   /IMGT_map=7q34   /mol_type=genomic DNA  
+                     /organism=Homo sapiens"
+                     /note="color: #a6acb3"
+     overlap         2607..2610
+                     /note="olp_KUkLvfMZLGolLJmz0ht2IdfI3lw"
+                     /chksum="KUkLvfMZLGolLJmz0ht2IdfI3lw"
+                     /ApEinfo_fwdcolor="#B3EFBB"
+                     /ApEinfo_revcolor="#F6DBEC"
+ORIGIN
+        1 gtttcgtcct ttccacaaga tatataaagc caagaaatcg aaatactttc aagttacggt
+       61 aagcatatga tagtccattt taaaacataa ttttaaaact gcaaactacc caagaaatta
+      121 ttactttcta cgtcacgtat tttgtactaa tatctttgtg tttacagtca aattaattct
+      181 aattatctct ctaacagcct tgtatcgtat atgcaaatat gaaggaatca tgggaaatag
+      241 gccctcgagc aaaaggccag caaaaggcca ggaaccgtaa aaaggccgcg ttgctggcgt
+      301 ttttccatag gctccgcccc cctgacgagc atcacaaaaa tcgacgctca agtcagaggt
+      361 ggcgaaaccc gacaggacta taaagatacc aggcgtttcc ccctggaagc tccctcgtgc
+      421 gctctcctgt tccgaccctg ccgcttaccg gatacctgtc cgcctttctc ccttcgggaa
+      481 gcgtggcgct ttctcatagc tcacgctgta ggtatctcag ttcggtgtag gtcgttcgct
+      541 ccaagctggg ctgtgtgcac gaaccccccg ttcagcccga ccgctgcgcc ttatccggta
+      601 actatcgtct tgagtccaac ccggtaagac acgacttatc gccactggca gcagccactg
+      661 gtaacaggat tagcagagcg aggtatgtag gcggtgctac agagttcttg aagtggtggc
+      721 ctaactacgg ctacactaga agaacagtat ttggtatctg cgctctgctg aagccagtta
+      781 ccttcggaaa aagagttggt agctcttgat ccggcaaaca aaccaccgct ggtagcggtg
+      841 gtttttttgt ttgcaagcag cagattacgc gcagaaaaaa aggatctcaa gaagatcctt
+      901 tgatcttttc tacggggtct gacgctcagt ggaacgaaaa ctcacgttaa gggattttgg
+      961 tcatgagatt atcaaaaagg atcttcacct agatcctttt aaattaaaaa tgaagtttta
+     1021 aatcaatcta aagtatatat gagtaaactt ggtctgacag ttaccaatgc ttaatcagtg
+     1081 aggcacctat ctcagcgatc tgtctatttc gttcatccat agttgcctga ctccccgtcg
+     1141 tgtagataac tacgatacgg gagggcttac catctggccc cagtgctgca atgataccgc
+     1201 gagaaccacg ctcaccggct ccagatttat cagcaataaa ccagccagcc ggaagggccg
+     1261 agcgcagaag tggtcctgca actttatccg cctccatcca gtctattaat tgttgccggg
+     1321 aagctagagt aagtagttcg ccagttaata gtttgcgcaa cgttgttgcc attgctacag
+     1381 gcatcgtggt gtcacgctcg tcgtttggta tggcttcatt cagctccggt tcccaacgat
+     1441 caaggcgagt tacatgatcc cccatgttgt gcaaaaaagc ggttagctcc ttcggtcctc
+     1501 cgatcgttgt cagaagtaag ttggccgcag tgttatcact catggttatg gcagcactgc
+     1561 ataattctct tactgtcatg ccatccgtaa gatgcttttc tgtgactggt gagtactcaa
+     1621 ccaagtcatt ctgagaatag tgtatgcggc gaccgagttg ctcttgcccg gcgtcaatac
+     1681 gggataatac cgcgccacat agcagaactt taaaagtgct catcattgga aaacgttctt
+     1741 cggggcgaaa actctcaagg atcttaccgc tgttgagatc cagttcgatg taacccactc
+     1801 gtgcacccaa ctgatcttca gcatctttta ctttcaccag cgtttctggg tgagcaaaaa
+     1861 caggaaggca aaatgccgca aaaaagggaa taagggcgac acggaaatgt tgaatactca
+     1921 tactcttcct ttttcaatat tattgaagca tttatcaggg ttattgtctc atgagcggat
+     1981 acatatttga atgtatttag aaaaataaac aaataggggt tccgcgcaca tttccccgaa
+     2041 aagtgccacc tgacgtcgct agctgtacaa aaaagcaggc tttaaaggaa ccaattcagt
+     2101 cgactggatc cggtaccaag gtcgggcagg aagagggcct atttcccatg attccttcat
+     2161 atttgcatat acgatacaag gctgttagag agataattag aattaatttg actgtaaaca
+     2221 caaagatatt agtacaaaat acgtgacgta gaaagtaata atttcttggg tagtttgcag
+     2281 ttttaaaatt atgttttaaa atggactatc atatgcttac cgtaacttga aagtatttcg
+     2341 atttcttggc tttatatatc ttgtggaaag gacgaaacac cgctgaccct gccgtgtacc
+     2401 agctgagaga ctctaaatcc agtgacaagt ctgtctgcct atnnnnnnnn nnnngctaga
+     2461 agagctgggg gctcgtccgg gattttttta agcttaaaaa aatcccggac gagcccccaa
+     2521 gttggctctt ctagcnnnnn nnnnnnnttg ggtgtgggag atctctgctt ctgatggctc
+     2581 aaacacagcg acctcgggtg ggaacacggt
+//

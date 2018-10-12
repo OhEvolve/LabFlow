@@ -2,6 +2,7 @@
 # homegrown libraries
 import plasmids 
 import primers 
+import inserts 
 import restriction_enzymes 
 
 import reactions
@@ -23,15 +24,31 @@ Available functions:
 
 seqs = plasmids.get_all()
 primers = primers.get_all()
+inserts = inserts.get_all()
 renzymes = restriction_enzymes.get_all()
 
-gRNA = seqs['HEK-gRNA_2site_Cloning_Vector']
-pHIV = seqs['pHIV-mCherry-xI-GG']
+vector = seqs['ART-pgRNA-GG']
+
+oligos = [
+        inserts['ARTSE-TRAC-Template'],
+        inserts['ARTSE-TRBC-Template'],
+        inserts['ARTSE-MLRT-PBS-Bridge'],
+        ]
+
+possible_plasmids = reactions.golden_gate(vector,*oligos,enzyme = 'BsaI')
+
+print(possible_plasmids)
+
+possible_plasmids.write('ART-pgRNA-complete.dna')
+
+
+"""
+gRNA = seqs['HEK-gRNA_Cloning_Vector']
+final = seqs['ART-pgRNA-GG']
 
 psets = [
-    (primers['pgRNA-GG-0-F'],primers['pgRNA-GG-1-R']),
-    (primers['pgRNA-GG-1-F'],primers['pgRNA-GG-2-R']),
-    (primers['pgRNA-GG-2-F'],primers['pgRNA-GG-0-R'])
+    (primers['ART-Vector-F'],primers['ART-Vector-R']),
+    (primers['ART-Frag1-F'],primers['ART-Frag1-R']),
 ]
 
 pcr_products = []
@@ -40,10 +57,22 @@ for pset in psets:
     product = reactions.pcr(gRNA,*pset)
     pcr_products += [product]
 
-possible_plasmids = reactions.golden_gate(pHIV,*pcr_products,enzyme = 'Esp3I')
+bridge = reactions.anneal(primers['ART-Span0-F'],primers['ART-Span0-R'])
 
-final_plasmid = tools.get_largest(possible_plasmids)
+for p in pcr_products:
 
-final_plasmid.write('Complete.dna')
+    print(p.seq)
+
+possible_plasmids = reactions.gibson(pcr_products[0],
+                                     pcr_products[1],
+                                     bridge,
+                                     limit = 20,
+                                     only_terminal_overlaps = True)
+print(possible_plasmids)
+
+final_plasmid = tools.get_smallest(possible_plasmids)
+
+final_plasmid.write('ART-pgRNA-2.dna')
+"""
 
 

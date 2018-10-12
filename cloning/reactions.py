@@ -36,9 +36,10 @@ def pcr(template,*primers):
     """ Forward PCR reaction w/ primers and template """
     return amplify.pcr(primers,template)
 
-def gibson(*fragments,limit = 18):
+def gibson(*fragments,limit = 18,only_terminal_overlaps = False):
     """ Forward Gibson reaction for fragments with overlaps """
-    products = Assembly(fragments,limit = 18)
+    products = Assembly(fragments,limit = 18,
+            only_terminal_overlaps = only_terminal_overlaps)
     print(products)
     return products.circular_products
 
@@ -48,6 +49,11 @@ def golden_gate(*elements,enzyme = 'BspQI'):
     for element in elements:
         product = digest(element,enzyme)
         fragments += [tools.get_largest(product)]
+
+    for f in fragments:
+        print(f)
+        print('\n')#print(f.seq)
+
     products = Assembly(fragments,limit = 4,only_terminal_overlaps = True)
     circ = products.circular_products
     if len(circ) > 1:
