@@ -10,8 +10,10 @@ from Bio import Restriction
 
 from pydna.dseqrecord import Dseqrecord
 from pydna import amplify
+from pydna import assembly 
 #from pydna.design import assembly_fragments
 from pydna.assembly import Assembly
+from pydna.amplicon import Amplicon 
 
 
 def digest(seq,*enzyme_names):
@@ -25,6 +27,11 @@ def digest(seq,*enzyme_names):
         return seq
     return products
 
+def anneal(f_primer,r_primer):
+    """ Forward PCR reaction w/ primers and template """
+    # TODO: create checks for actual seq
+    return Amplicon(f_primer)
+
 def pcr(template,*primers):
     """ Forward PCR reaction w/ primers and template """
     return amplify.pcr(primers,template)
@@ -32,6 +39,7 @@ def pcr(template,*primers):
 def gibson(*fragments,limit = 18):
     """ Forward Gibson reaction for fragments with overlaps """
     products = Assembly(fragments,limit = 18)
+    print(products)
     return products.circular_products
 
 def golden_gate(*elements,enzyme = 'BspQI'):

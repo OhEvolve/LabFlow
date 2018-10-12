@@ -1,0 +1,229 @@
+LOCUS       name?                   4832 bp    DNA     circular UNK 11-OCT-2018
+DEFINITION  description?.
+ACCESSION   id?
+VERSION     id?
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     rep_origin      complement(34..622)
+                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of
+                     replication"
+                     /note="color: #ffff00"
+                     /direction=LEFT
+                     /label="ori"
+     CDS             complement(793..1653)
+                     /note="confers resistance to ampicillin, carbenicillin, and
+                     related antibiotics"
+                     /note="color: #ccffcc"
+                     /product="β-lactamase"
+                     /transl_table=1
+                     /codon_start=1
+                     /translation="MSIQHFRVALIPFFAAFCLPVFA,HPETLVKVKDAEDQLGARVGY
+                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEY
+                     SPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDR
+                     WEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRS
+                     ALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGA
+                     SLIKHW*"
+                     /gene="bla"
+                     /label="AmpR"
+     promoter        complement(1654..1758)
+                     /gene="bla"
+                     /label="AmpR promoter"
+                     /note="color: #ffffff"
+     promoter        complement(1695..1723)
+                     /label="amp prom"
+                     /note="/Imported_from=Pla'>http://wishart.biology.ualberta.
+                     ca/PlasMapper'>Pla sMapper   /Transferred_From=amp prom  
+                     /Transferred_Similarity=100.00%"
+                     /note="color: #ffffff"
+     promoter        1865..2105
+                     /note="RNA polymerase III promoter for human U6 snRNA"
+                     /note="color: #ffffff"
+                     /label="U6 promoter"
+     overlap         1865..2114
+                     /note="olp_glEm3wDM0QwMznV95_eOPvcavvI"
+                     /chksum="glEm3wDM0QwMznV95_eOPvcavvI"
+                     /ApEinfo_fwdcolor="#ECFDC4"
+                     /ApEinfo_revcolor="#D9FAE8"
+     primer_bind     complement(2097..2116)
+                     /note="<unknown name>"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(2097..2136)
+                     /label="<unknown id>"
+     overlap         2110..2136
+                     /note="olp_IlEgMEv2wOyWshP8U8-vqLOfoe0"
+                     /chksum="IlEgMEv2wOyWshP8U8-vqLOfoe0"
+                     /ApEinfo_fwdcolor="#C7EBCE"
+                     /ApEinfo_revcolor="#C4E0B0"
+     overlap         2119..2136
+                     /note="olp_Zi8fusigz7CYNgfHhIax2p5R5BA"
+                     /chksum="Zi8fusigz7CYNgfHhIax2p5R5BA"
+                     /ApEinfo_fwdcolor="#CABAE8"
+                     /ApEinfo_revcolor="#C9EBE1"
+     primer_bind     2143..2162
+                     /note="<unknown name>"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     promoter        complement(2154..2394)
+                     /note="RNA polymerase III promoter for human U6 snRNA"
+                     /note="color: #ffffff"
+                     /label="U6 promoter"
+     promoter        2501..2605
+                     /gene="bla"
+                     /label="AmpR promoter"
+                     /note="color: #ffffff"
+     promoter        2536..2564
+                     /label="amp prom"
+                     /note="/Imported_from=Pla'>http://wishart.biology.ualberta.
+                     ca/PlasMapper'>Pla sMapper   /Transferred_From=amp prom  
+                     /Transferred_Similarity=100.00%"
+                     /note="color: #ffffff"
+     CDS             2606..3466
+                     /note="confers resistance to ampicillin, carbenicillin, and
+                     related antibiotics"
+                     /note="color: #ccffcc"
+                     /product="β-lactamase"
+                     /transl_table=1
+                     /codon_start=1
+                     /translation="MSIQHFRVALIPFFAAFCLPVFA,HPETLVKVKDAEDQLGARVGY
+                     IELDLNSGKILESFRPEERFPMMSTFKVLLCGAVLSRIDAGQEQLGRRIHYSQNDLVEY
+                     SPVTEKHLTDGMTVRELCSAAITMSDNTAANLLLTTIGGPKELTAFLHNMGDHVTRLDR
+                     WEPELNEAIPNDERDTTMPVAMATTLRKLLTGELLTLASRQQLIDWMEADKVAGPLLRS
+                     ALPAGWFIADKSGAGERGSRGIIAALGPDGKPSRIVVIYTTGSQATMDERNRQIAEIGA
+                     SLIKHW*"
+                     /gene="bla"
+                     /label="AmpR"
+     rep_origin      3637..4225
+                     /note="high-copy-number ColE1/pMB1/pBR322/pUC origin of
+                     replication"
+                     /note="color: #ffff00"
+                     /direction=LEFT
+                     /label="ori"
+     overlap         4259..4302
+                     /note="olp_OZOcJvYWwtTCyZFM9uxxHtXX_RU"
+                     /chksum="OZOcJvYWwtTCyZFM9uxxHtXX_RU"
+                     /ApEinfo_fwdcolor="#F8ECDD"
+                     /ApEinfo_revcolor="#F9FBD4"
+     primer_bind     complement(4263..4280)
+                     /note="<unknown name>"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            4263..4302
+                     /label="<unknown id>"
+     primer_bind     complement(4513..4530)
+                     /note="<unknown name>"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            complement(4513..4552)
+                     /label="<unknown id>"
+     overlap         4526..4552
+                     /note="olp_XnL6RmDIrmWQPcfUGdiK0n6Q5i4"
+                     /chksum="XnL6RmDIrmWQPcfUGdiK0n6Q5i4"
+                     /ApEinfo_fwdcolor="#BEE1DC"
+                     /ApEinfo_revcolor="#BEBEBD"
+     overlap         4535..4552
+                     /note="olp_Zi8fusigz7CYNgfHhIax2p5R5BA"
+                     /chksum="Zi8fusigz7CYNgfHhIax2p5R5BA"
+                     /ApEinfo_fwdcolor="#CABAE8"
+                     /ApEinfo_revcolor="#C9EBE1"
+     promoter        complement(4570..4810)
+                     /note="RNA polymerase III promoter for human U6 snRNA"
+                     /note="color: #ffffff"
+                     /label="U6 promoter"
+     overlap         4789..4832
+                     /note="olp_psUyRHHdcZPBuHvULdJoUDzIjQQ"
+                     /chksum="psUyRHHdcZPBuHvULdJoUDzIjQQ"
+                     /ApEinfo_fwdcolor="#CDD8CF"
+                     /ApEinfo_revcolor="#C8DAE1"
+     primer_bind     complement(4793..4810)
+                     /note="<unknown name>"
+                     /ApEinfo_fwdcolor="green"
+                     /ApEinfo_revcolor="red"
+     misc            4793..4832
+                     /label="<unknown id>"
+ORIGIN
+        1 caggaaccgt aaaaaggccg cgttgctggc gtttttccat aggctccgcc cccctgacga
+       61 gcatcacaaa aatcgacgct caagtcagag gtggcgaaac ccgacaggac tataaagata
+      121 ccaggcgttt ccccctggaa gctccctcgt gcgctctcct gttccgaccc tgccgcttac
+      181 cggatacctg tccgcctttc tcccttcggg aagcgtggcg ctttctcata gctcacgctg
+      241 taggtatctc agttcggtgt aggtcgttcg ctccaagctg ggctgtgtgc acgaaccccc
+      301 cgttcagccc gaccgctgcg ccttatccgg taactatcgt cttgagtcca acccggtaag
+      361 acacgactta tcgccactgg cagcagccac tggtaacagg attagcagag cgaggtatgt
+      421 aggcggtgct acagagttct tgaagtggtg gcctaactac ggctacacta gaagaacagt
+      481 atttggtatc tgcgctctgc tgaagccagt taccttcgga aaaagagttg gtagctcttg
+      541 atccggcaaa caaaccaccg ctggtagcgg tggttttttt gtttgcaagc agcagattac
+      601 gcgcagaaaa aaaggatctc aagaagatcc tttgatcttt tctacggggt ctgacgctca
+      661 gtggaacgaa aactcacgtt aagggatttt ggtcatgaga ttatcaaaaa ggatcttcac
+      721 ctagatcctt ttaaattaaa aatgaagttt taaatcaatc taaagtatat atgagtaaac
+      781 ttggtctgac agttaccaat gcttaatcag tgaggcacct atctcagcga tctgtctatt
+      841 tcgttcatcc atagttgcct gactccccgt cgtgtagata actacgatac gggagggctt
+      901 accatctggc cccagtgctg caatgatacc gcgagaccca cgctcaccgg ctccagattt
+      961 atcagcaata aaccagccag ccggaagggc cgagcgcaga agtggtcctg caactttatc
+     1021 cgcctccatc cagtctatta attgttgccg ggaagctaga gtaagtagtt cgccagttaa
+     1081 tagtttgcgc aacgttgttg ccattgctac aggcatcgtg gtgtcacgct cgtcgtttgg
+     1141 tatggcttca ttcagctccg gttcccaacg atcaaggcga gttacatgat cccccatgtt
+     1201 gtgcaaaaaa gcggttagct ccttcggtcc tccgatcgtt gtcagaagta agttggccgc
+     1261 agtgttatca ctcatggtta tggcagcact gcataattct cttactgtca tgccatccgt
+     1321 aagatgcttt tctgtgactg gtgagtactc aaccaagtca ttctgagaat agtgtatgcg
+     1381 gcgaccgagt tgctcttgcc cggcgtcaat acgggataat accgcgccac atagcagaac
+     1441 tttaaaagtg ctcatcattg gaaaacgttc ttcggggcga aaactctcaa ggatcttacc
+     1501 gctgttgaga tccagttcga tgtaacccac tcgtgcaccc aactgatctt cagcatcttt
+     1561 tactttcacc agcgtttctg ggtgagcaaa aacaggaagg caaaatgccg caaaaaaggg
+     1621 aataagggcg acacggaaat gttgaatact catactcttc ctttttcaat attattgaag
+     1681 catttatcag ggttattgtc tcatgagcgg atacatattt gaatgtattt agaaaaataa
+     1741 acaaataggg gttccgcgca catttccccg aaaagtgcca cctgacgtcg ctagctgtac
+     1801 aaaaaagcag gctttaaagg aaccaattca gtcgactgga tccggtacca aggtcgggca
+     1861 ggaagagggc ctatttccca tgattccttc atatttgcat atacgataca aggctgttag
+     1921 agagataatt agaattaatt tgactgtaaa cacaaagata ttagtacaaa atacgtgacg
+     1981 tagaaagtaa taatttcttg ggtagtttgc agttttaaaa ttatgtttta aaatggacta
+     2041 tcatatgctt accgtaactt gaaagtattt cgatttcttg gctttatata tcttgtggaa
+     2101 aggacgaaac accgggctag agacccgaat tcgggtctct agcccggtgt ttcgtccttt
+     2161 ccacaagata tataaagcca agaaatcgaa atactttcaa gttacggtaa gcatatgata
+     2221 gtccatttta aaacataatt ttaaaactgc aaactaccca agaaattatt actttctacg
+     2281 tcacgtattt tgtactaata tctttgtgtt tacagtcaaa ttaattctaa ttatctctct
+     2341 aacagccttg tatcgtatat gcaaatatga aggaatcatg ggaaataggc cctcttcctg
+     2401 cccgaccttg gtaccggatc cagtcgactg aattggttcc tttaaagcct gcttttttgt
+     2461 acagctagcg acgtcaggtg gcacttttcg gggaaatgtg cgcggaaccc ctatttgttt
+     2521 atttttctaa atacattcaa atatgtatcc gctcatgaga caataaccct gataaatgct
+     2581 tcaataatat tgaaaaagga agagtatgag tattcaacat ttccgtgtcg cccttattcc
+     2641 cttttttgcg gcattttgcc ttcctgtttt tgctcaccca gaaacgctgg tgaaagtaaa
+     2701 agatgctgaa gatcagttgg gtgcacgagt gggttacatc gaactggatc tcaacagcgg
+     2761 taagatcctt gagagttttc gccccgaaga acgttttcca atgatgagca cttttaaagt
+     2821 tctgctatgt ggcgcggtat tatcccgtat tgacgccggg caagagcaac tcggtcgccg
+     2881 catacactat tctcagaatg acttggttga gtactcacca gtcacagaaa agcatcttac
+     2941 ggatggcatg acagtaagag aattatgcag tgctgccata accatgagtg ataacactgc
+     3001 ggccaactta cttctgacaa cgatcggagg accgaaggag ctaaccgctt ttttgcacaa
+     3061 catgggggat catgtaactc gccttgatcg ttgggaaccg gagctgaatg aagccatacc
+     3121 aaacgacgag cgtgacacca cgatgcctgt agcaatggca acaacgttgc gcaaactatt
+     3181 aactggcgaa ctacttactc tagcttcccg gcaacaatta atagactgga tggaggcgga
+     3241 taaagttgca ggaccacttc tgcgctcggc ccttccggct ggctggttta ttgctgataa
+     3301 atctggagcc ggtgagcgtg ggtctcgcgg tatcattgca gcactggggc cagatggtaa
+     3361 gccctcccgt atcgtagtta tctacacgac ggggagtcag gcaactatgg atgaacgaaa
+     3421 tagacagatc gctgagatag gtgcctcact gattaagcat tggtaactgt cagaccaagt
+     3481 ttactcatat atactttaga ttgatttaaa acttcatttt taatttaaaa ggatctaggt
+     3541 gaagatcctt tttgataatc tcatgaccaa aatcccttaa cgtgagtttt cgttccactg
+     3601 agcgtcagac cccgtagaaa agatcaaagg atcttcttga gatccttttt ttctgcgcgt
+     3661 aatctgctgc ttgcaaacaa aaaaaccacc gctaccagcg gtggtttgtt tgccggatca
+     3721 agagctacca actctttttc cgaaggtaac tggcttcagc agagcgcaga taccaaatac
+     3781 tgttcttcta gtgtagccgt agttaggcca ccacttcaag aactctgtag caccgcctac
+     3841 atacctcgct ctgctaatcc tgttaccagt ggctgctgcc agtggcgata agtcgtgtct
+     3901 taccgggttg gactcaagac gatagttacc ggataaggcg cagcggtcgg gctgaacggg
+     3961 gggttcgtgc acacagccca gcttggagcg aacgacctac accgaactga gatacctaca
+     4021 gcgtgagcta tgagaaagcg ccacgcttcc cgaagggaga aaggcggaca ggtatccggt
+     4081 aagcggcagg gtcggaacag gagagcgcac gagggagctt ccagggggaa acgcctggta
+     4141 tctttatagt cctgtcgggt ttcgccacct ctgacttgag cgtcgatttt tgtgatgctc
+     4201 gtcagggggg cggagcctat ggaaaaacgc cagcaacgcg gcctttttac ggttcctggc
+     4261 cttttgctgg ccttttgctc gagggcctat ttcccatgat tccttcatat ttgcatatac
+     4321 gatacaaggc tgttagagag ataattagaa ttaatttgac tgtaaacaca aagatattag
+     4381 tacaaaatac gtgacgtaga aagtaataat ttcttgggta gtttgcagtt ttaaaattat
+     4441 gttttaaaat ggactatcat atgcttaccg taacttgaaa gtatttcgat ttcttggctt
+     4501 tatatatctt gtggaaagga cgaaacaccg caccagagac ccgaattcgg gtctctggtg
+     4561 cggtgtttcg tcctttccac aagatatata aagccaagaa atcgaaatac tttcaagtta
+     4621 cggtaagcat atgatagtcc attttaaaac ataattttaa aactgcaaac tacccaagaa
+     4681 attattactt tctacgtcac gtattttgta ctaatatctt tgtgtttaca gtcaaattaa
+     4741 ttctaattat ctctctaaca gccttgtatc gtatatgcaa atatgaagga atcatgggaa
+     4801 ataggccctc gagcaaaagg ccagcaaaag gc
+//
